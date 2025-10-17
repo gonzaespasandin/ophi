@@ -34,8 +34,8 @@ Route::post('/registrarse/usuario', [\App\Http\Controllers\RegisterController::c
     ------------------------- médico ---------------------------
 */
 
-Route::get('/registrarse/perfil-medico', [\App\Http\Controllers\MedicalProfileController::class, 'register'])
-    ->name('auth.register.show');
+Route::get('/registrarse/perfil-medico/', [\App\Http\Controllers\MedicalProfileController::class, 'create'])
+    ->name('profile.create.show');
 
-Route::post('/registrarse/perfil-medico', [\App\Http\Controllers\MedicalProfileController::class, 'process'])
-    ->name('auth.register.process');
+Route::post('/registrarse/perfil-medico', [\App\Http\Controllers\MedicalProfileController::class, 'store'])
+    ->name('profile.create.store');

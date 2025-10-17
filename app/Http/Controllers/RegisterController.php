@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -11,7 +12,8 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-    public function process(Request $request)  {
+    public function process(Request $request)  
+    {
         $request->validate(
             [
                 'email' => 'required|min:3|max:255',
@@ -37,6 +39,9 @@ class RegisterController extends Controller
 
         $user = User::create($data);
 
-        return to_route('home');
+        // Logueo al usuario para luego usar su ID para su perfil médico
+        Auth::login($user);
+    
+        return to_route('profile.create.show');
     }
 }

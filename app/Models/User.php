@@ -45,4 +45,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    /**
+     * Obtiene el perfil medico propio del usuario.
+     */
+    public function medicalProfile()
+    {
+        return $this->hasOne(MedicalProfile::class);
+    }
 }

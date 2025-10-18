@@ -32,7 +32,7 @@ $foodConditions = [
 
 <x-layouts.main>
     <x-slot:title>Crear perfil médico</x-slot:title>
-   @auth
+    @auth
      <h2>{{$user->name}}, creá tu perfil médico</h2>
     @if($errors->any()) 
         <div>El formulario tiene errores</div>
@@ -47,10 +47,6 @@ $foodConditions = [
                     <option value="{{ $foodCondition }}">{{ $foodCondition }}</option>
                 @endforeach
             </select>
-        </div>
-        <div>
-            <label for="id_user"></label>
-            <input type="hidden" id="id_user" name="id_user" value="{{ $user->id }}">
         </div>
         <button type="submit">Crear</button>
     </form>

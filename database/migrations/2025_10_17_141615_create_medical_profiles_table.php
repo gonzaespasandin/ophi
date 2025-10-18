@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('medical_profiles', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->unsignedBigInteger('id_user'); // Primero declarar el campo.
-            $table->foreign('id_user') // Foreign() --> nombre del campo que contiene la FK
+            $table->unsignedBigInteger('user_id'); // Primero declarar el campo.
+            $table->foreign('user_id') // Foreign() --> nombre del campo que contiene la FK
                   ->references('id') // References() --> nombre del campo al cual referencia ese FK, es decir, la PK de otra tabla.
                   ->on('users'); // On() --> en que tabla está el PK al cual vamos a referenciar.
             $table->string('picture')->nullable();

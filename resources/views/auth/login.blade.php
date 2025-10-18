@@ -12,7 +12,8 @@
             <input 
             type="email" 
             id="email" 
-            name="email">
+            name="email"
+            value="{{ old('email') }}">
             @error('email')
                 <div>{{ $message }}</div>
             @endif
@@ -23,7 +24,8 @@
             <input 
             type="password" 
             id="password" 
-            name="password">
+            name="password"
+            autocomplete="on">
             @error('password')
                 <div>{{ $message }}</div>
             @endif

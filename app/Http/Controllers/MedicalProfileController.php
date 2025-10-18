@@ -20,10 +20,10 @@ class MedicalProfileController extends Controller
 
 
 
-        $data = $request->only('condition');
+        $data = $request->only('title', 'id_user');
 
+        MedicalProfile::create($data);
 
-
-  
+        return to_route('home');
     }
 }

@@ -41,13 +41,16 @@ $foodConditions = [
     <form action="{{route('profile.create.store')}}" method="POST">
         @csrf
         <div class="mb-3 text-2xl">
-            <label for="condition">Condición alimentaria</label>
-            <select id="condition" name="condition">
+            <label for="title">Condición alimentaria</label>
+            <select id="title" name="title">
                 @foreach($foodConditions as $foodCondition)
                     <option value="{{ $foodCondition }}">{{ $foodCondition }}</option>
                 @endforeach
             </select>
-
+        </div>
+        <div>
+            <label for="id_user"></label>
+            <input type="hidden" id="id_user" name="id_user" value="{{ $user->id }}">
         </div>
         <button type="submit">Crear</button>
     </form>

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('global_gategories', function (Blueprint $table) {
+        Schema::create('global_categories', function (Blueprint $table) {
             $table->id();
             $table->string('global_category');
             $table->timestamps();
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('global_gategories');
+        Schema::dropIfExists('global_categories');
     }
 };

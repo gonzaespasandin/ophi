@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('profile_has_to_avoid', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('profile_id')->constrained('medital_profiles');
-            $table->foreignId('ingredient_id')->nullable()->constrained();
+            $table->foreignId('profile_id')->constrained('medical_profiles');
+            $table->foreignId('ingredient_id')->nullable()->constrained('ingredients');
             $table->foreignId('group_id')->nullable()->constrained();
             $table->timestamps();
         });

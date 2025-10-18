@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('barcode', 15)->unique(); // 13 numbers per barcode
             $table->string('rnpa', 10)->unique(); // 8 numbers per RNPA
 
-            $table->foreignId('global_category_id')->constrained();
-            $table->foreignId('brand_id')->constrained();
+            $table->foreignId('global_category_id')->constrained('global_categories');
+            $table->foreignId('brand_id')->constrained('brands');
 
             $table->timestamps();
         });

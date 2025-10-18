@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class MedicalProfile extends Model
 {
-    protected $fillable = ['title', 'id_user'];
+    protected $fillable = ['title', 'user_id'];
 }

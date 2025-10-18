@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $title ?? ''}} :: Ophi</title>
     <link rel="stylesheet" href="<?= url('css/styles.css');?>">
+    {{ $head ?? '' }}
 </head>
 <body>
     <nav class="">
@@ -16,6 +17,7 @@
                 <li><x-nav-link route="auth.login.show">Iniciar sesión</x-nav-link></li>
             @endguest
             @auth
+                <li><x-nav-link route="scanner.index">Escaner</x-nav-link></li>
                 <li>
                     <form action="{{ route('auth.logout.process') }}" method="POST">
                         @csrf

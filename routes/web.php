@@ -58,3 +58,15 @@ Route::post('/iniciar-sesion', [\App\Http\Controllers\AuthController::class, 'pr
 
 Route::post('/cerrar-sesion', [\App\Http\Controllers\AuthController::class, 'logoutProcess'])
      ->name('auth.logout.process');
+
+/*
+    ------------------------------------------------------------
+    ------------------------ SCANNER ---------------------------
+    ------------------------------------------------------------
+*/
+
+Route::get('/escaner', [\App\Http\Controllers\ScannerController::class, 'index'])
+    ->name('scanner.index');
+
+Route::post('/escaner/procesar', [\App\Http\Controllers\ScannerController::class, 'process'])
+    ->name('scanner.process');

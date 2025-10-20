@@ -70,10 +70,12 @@ Route::post('/cerrar-sesion', [\App\Http\Controllers\AuthController::class, 'log
 */
 
 Route::get('/escaner', [\App\Http\Controllers\ScannerController::class, 'index'])
-    ->name('scanner.index');
+    ->name('scanner.index')
+    ->middleware('auth');
 
 Route::post('/escaner/procesar', [\App\Http\Controllers\ScannerController::class, 'process'])
-    ->name('scanner.process');
+    ->name('scanner.process')
+    ->middleware('auth');
 
 
 /*

@@ -24,15 +24,40 @@ let cvRouter = null;
     cvRouter.setInput(cameraEnhancer);
 
     const resultsContainer = document.querySelector("#results");
-    cvRouter.addResultReceiver({ onDecodedBarcodesReceived: (result) => {
-      if (result.barcodeResultItems?.length) {
-        resultsContainer.textContent = '';
-        Dynamsoft.DCE.Feedback.beep();
-        for (let item of result.barcodeResultItems) {
-          resultsContainer.textContent += `${item.formatString}: ${item.text}\n\n`;
+    cvRouter.addResultReceiver({
+      onDecodedBarcodesReceived: async (result) => {
+        if (result.barcodeResultItems?.length) {
+          resultsContainer.textContent = '';
+          Dynamsoft.DCE.Feedback.beep();
+    
+          for (let item of result.barcodeResultItems) {
+            const codigo = item.text.trim();
+            resultsContainer.textContent += `${item.formatString}: ${codigo}\n\n`;
+    
+            try {
+              const response = await fetch('/escaner/procesar', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ codigo })
+              });
+              const data = await response.json();
+    
+              if (response.ok) {
+                resultsContainer.textContent += `✅ Código encontrado: ${data.name || 'sin nombre'}`;
+              } else {
+                resultsContainer.textContent += `❌ Código no encontrado: ${codigo}`;
+              }
+    
+            } catch (err) {
+              resultsContainer.textContent += `❌ Error al consultar el backend: ${err}`;
+            }
+          }
         }
       }
-    }});
+    });
 
     let filter = new Dynamsoft.Utility.MultiFrameResultCrossFilter();
     filter.enableResultCrossVerification("barcode", true);

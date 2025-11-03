@@ -17,6 +17,10 @@ class IngredientProductSeeder extends Seeder
             [
                 'ingredient_id' => 1,
                 'product_id' => 1,
+            ],
+            [
+                'ingredient_id' => 2,
+                'product_id' => 1,
             ]
         ]);
     }

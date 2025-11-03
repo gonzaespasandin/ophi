@@ -24,4 +24,24 @@ class ProfileController extends Controller
             return response()->json([], 401);
         }
     }
+
+    public function store(Request $request) {
+        Log::debug('Guardando un perfil de un usuario autenticado');
+        $data = $request->validate([
+            'name' => 'required',
+            'ingredients' => 'required',
+        ]);
+        Log::debug('La validación es correcta');
+        Log::info('Datos del perfil:', ['data' => $data]);
+
+        $profile = new Profile();
+        $profile->name = $data['name'];
+        $profile->avatar = $data['avatar'] ?? null;
+        $profile->user_id = auth()->user()->id;
+        $profile->save();
+
+        $profile->ingredients()->attach($data['ingredients'] ?? []);
+
+        return response()->json($profile);
+    }
 }

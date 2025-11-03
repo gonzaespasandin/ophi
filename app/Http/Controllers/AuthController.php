@@ -5,44 +5,56 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function login() 
+
+    public function login(Request $request)
     {
-        return view('auth.login');
-    }
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-    public function process(Request $request) 
-    {   
-        $request->validate(
-            [
-                'email' => 'required|min:3|max:255',
-                'password' => 'required|min:5|max:255'
-            ],
-            [
-                'email.required' => 'El email es obligatorio',
-                'email.min' => 'El email debe tener mínimo 3 caracteres',
-                'email.max' => 'El email no debe tener más 255 caracteres',
-                'password.required' => 'La contraseña es obligatoria',
-                'password.min' => 'La contraseña debe tener más de 6 caracteres', 
-                'password.max' => 'La contraseña np debe tener más de 255 caracteres'
-            ] 
-        );
 
-        $credentials = $request->only(['email', 'password']);
-
-        if(Auth::attempt($credentials)) {
-            return to_route('home');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return response()->json(auth()->user());
         }
 
-        return to_route('auth.login.show');
+        return response()->json('Algo salió mal');
     }
-    
 
-    public function logoutProcess() {
+    public function register(Request $request) {
+        Log::debug('Registrando usuario...');
+        $data = $request->validate([
+            'terms_and_conditions' => 'required',
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+            'confirm_password' => 'required|same:password',
+        ]);
+        Log::debug('Todo bien en la validación :d');
+
+        $user = new User();
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = Hash::make($data['password']);
+        $user->save();
+        Log::info('Usuario registrado', ['user' => $user]);
+
+        return response()->json($user);
+    }
+
+    public function logout(Request $request) {
         Auth::logout();
 
-        return to_route('auth.login.show');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->noContent();
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\ScannerController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -39,3 +40,8 @@ Route::middleware(['auth:sanctum'])
 
         Route::get('/products/name/{name}', [ProductController::class, 'find_by_name']);
     });
+
+
+
+/** PRODUCTS */
+Route::post('/scanner/process', [ScannerController::class, 'process'])->middleware('auth:sanctum');

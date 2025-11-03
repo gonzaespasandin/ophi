@@ -50,8 +50,7 @@ class User extends Authenticatable
     /**
      * Obtiene el perfil medico propio del usuario.
      */
-    public function medicalProfile()
-    {
-        return $this->hasOne(MedicalProfile::class);
+    public function profiles() {
+        return $this->hasMany(Profile::class);
     }
 }

@@ -104,6 +104,21 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
                 // Ingredientes: Huevo (id 2), Leche (id 13)
             ],
+            [
+                'id' => 7,
+                'name' => 'Salmón ahumado',
+                'name_normalized' => 'salmonahumado',
+                'img' => 'placeholder.jpg',
+                'img_alt' => 'riquisimo salmon ahumado',
+                'origin' => 'Buenos Aires',
+                'barcode' => '7795566775532',
+                'rnpa' => '29010933',
+                'brand' => 'La Serenísima',
+                'category' => 'Fiambres',
+                'created_at' => now(),
+                'updated_at' => now(),
+                // Ingredientes: Salmón (10)
+            ],
         ]);
     }
 }

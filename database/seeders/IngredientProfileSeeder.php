@@ -19,6 +19,10 @@ class IngredientProfileSeeder extends Seeder
                 'profile_id' => 1,
             ],
             [
+                'ingredient_id' => 2,
+                'profile_id' => 1,
+            ],
+            [
                 'ingredient_id' =>3,
                 'profile_id' => 2,
             ],
@@ -26,10 +30,10 @@ class IngredientProfileSeeder extends Seeder
                 'ingredient_id' => 3,
                 'profile_id' => 3,
             ],
-            [
-                'ingredient_id' => 4,
-                'profile_id' => 3,
-            ],
+            // [
+            //     'ingredient_id' => 4,
+            //     'profile_id' => 3,
+            // ],
             [
                 'ingredient_id' => 2,
                 'profile_id' => 4,

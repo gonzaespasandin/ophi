@@ -77,7 +77,7 @@ class ProductController extends Controller
 
         if($product->isEmpty()) {
             $name = trim($name);
-            $products = Product::with(['ingredients'])->where('name', 'like', "$name%")->get();
+            $products = Product::with(['ingredients'])->where('name', 'like', "%$name%")->get();
 
             if(!$products) {
                 return response('Not Found', 404)->header('Content-Type', 'text/plain');
@@ -90,6 +90,17 @@ class ProductController extends Controller
 
 
         return response()->json($product);
+    }
+
+    public function find_match_by_name(string $name) {
+        $name = trim($name);
+        $products = Product::with(['ingredients'])->select('id', 'name')->where('name', 'like', "$name%")->limit(4)->get();
+        
+        if(!$products) {
+            return response('Not Found', 404)->header('Content-Type', 'text/plain');
+        }
+
+        return response()->json($products);
     }
 
 

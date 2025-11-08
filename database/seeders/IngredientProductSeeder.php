@@ -58,6 +58,10 @@ class IngredientProductSeeder extends Seeder
                 'ingredient_id' => 13,
                 'product_id' => 6,
             ],
+            [
+                'ingredient_id' => 10,
+                'product_id' => 7,
+            ],
         ]);
     }
 }

@@ -10,12 +10,12 @@ class ProfileController extends Controller
 {
     public function get_auth_user_profiles(): \Illuminate\Http\JsonResponse
     {
+     
         Log::debug('Obteniendo los resultados del perfil autenticado');
 
         if (auth()->check()) {
             Log::debug('Usuario está autenticado');
-            $profiles = Profile::with('ingredients')->where('user_id', auth()->user()->id)->get();
-
+            $profiles = Profile::with('ingredients.ingredients')->where('user_id', auth()->user()->id)->get();
             Log::info('Perfiles encontrados:', ['profiles' => $profiles]);
 
             return response()->json($profiles);

@@ -15,25 +15,37 @@ class IngredientProfileSeeder extends Seeder
     {
         DB::table('ingredient_profile')->insert([
             [
-                'ingredient_id' => 1,
+                'ingredient_id' => 4,
                 'profile_id' => 1,
             ],
             [
-                'ingredient_id' => 2,
+                'ingredient_id' =>3,
                 'profile_id' => 2,
             ],
             [
-                'ingredient_id' => 1,
+                'ingredient_id' => 3,
+                'profile_id' => 3,
+            ],
+            [
+                'ingredient_id' => 4,
                 'profile_id' => 3,
             ],
             [
                 'ingredient_id' => 2,
-                'profile_id' => 3,
+                'profile_id' => 4,
             ],
             [
-                'ingredient_id' => 1,
-                'profile_id' => 4,
-            ]
+                'ingredient_id' => 2,
+                'profile_id' => 5,
+            ],
+            [
+                'ingredient_id' => 2,
+                'profile_id' => 6,
+            ],
+            [
+                'ingredient_id' => 15,
+                'profile_id' => 7,
+            ],
         ]);
     }
 }

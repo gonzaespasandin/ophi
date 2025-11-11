@@ -21,7 +21,7 @@ class ProductSeeder extends Seeder
                 'img' => 'placeholder.jpg',
                 'img_alt' => 'milanesa de merluza rebozada lista para freír',
                 'origin' => 'Mar del Plata',
-                'barcode' => '7790011223344',
+                'barcode' => '5901234123457',
                 'rnpa' => '25010584',
                 'brand' => 'Granja del Sol',
                 'category' => 'Pescado',

@@ -28,6 +28,9 @@ Route::post('/profiles', [ProfileController::class, 'store'])->middleware('auth:
 
 /** INGREDIENTS */
 Route::get('/ingredients', [IngredientController::class, 'all']);
+Route::get('/intolerances', [IngredientController::class, 'intolerances']);
+Route::get('/allergies', [IngredientController::class, 'allergies']);
+Route::get('/special-diets', [IngredientController::class, 'special_diets']);
 
 
 

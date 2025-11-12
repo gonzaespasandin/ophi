@@ -24,9 +24,9 @@ class DatabaseSeeder extends Seeder
             IngredientSeeder::class,
             ProductSeeder::class,
             ProfileSeeder::class,
-            IngredientProductSeeder::class,
+            /*IngredientProductSeeder::class,
             IngredientProfileSeeder::class,
-            IngredientHasIngredientSeeder::class
+            IngredientHasIngredientSeeder::class*/
         ]);
     }
 }

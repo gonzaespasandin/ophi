@@ -14,6 +14,13 @@ class IngredientSeeder extends Seeder
      */
     public function run(): void
     {
+        /* Google Sheets: https://docs.google.com/spreadsheets/d/1LDv_qH4FuhV0LQTiN5MJDcJnZP0sCP3rvgly8dti_IY/edit?usp=sharing
+         * array_map: https://www.php.net/manual/en/function.array-map.php
+         * file: https://www.php.net/manual/en/function.file.php
+         * array_walk: https://www.php.net/manual/en/function.array-walk.php
+         * array_combine: https://www.php.net/manual/en/function.array-combine.php
+         * array_shift: https://www.php.net/manual/en/function.array-shift.php
+         * */
         $csv = array_map('str_getcsv', file(__DIR__ . '/../csv/ingredients.csv'));
         array_walk($csv, function(&$a) use ($csv) {
             $a = array_combine($csv[0], $a);

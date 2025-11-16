@@ -15,7 +15,7 @@ class ProfileController extends Controller
 
         if (auth()->check()) {
             Log::debug('Usuario está autenticado');
-            $profiles = Profile::with('ingredients.ingredients')->where('user_id', auth()->user()->id)->get();
+            $profiles = Profile::with('ingredients.ingredients.ingredients.ingredients')->where('user_id', auth()->user()->id)->get();
             Log::info('Perfiles encontrados:', ['profiles' => $profiles]);
 
             return response()->json($profiles);
@@ -44,4 +44,6 @@ class ProfileController extends Controller
 
         return response()->json($profile);
     }
+
+    
 }

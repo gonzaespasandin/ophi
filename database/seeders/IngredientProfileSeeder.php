@@ -15,7 +15,7 @@ class IngredientProfileSeeder extends Seeder
     {
         DB::table('ingredient_profile')->insert([
             [
-                'ingredient_id' => 4,
+                'ingredient_id' => 1, // Alergias
                 'profile_id' => 1,
             ],
             [
@@ -35,7 +35,11 @@ class IngredientProfileSeeder extends Seeder
             //     'profile_id' => 3,
             // ],
             [
-                'ingredient_id' => 2,
+                'ingredient_id' => 39,
+                'profile_id' => 4,
+            ],
+            [
+                'ingredient_id' => 42,
                 'profile_id' => 4,
             ],
             [
@@ -49,6 +53,26 @@ class IngredientProfileSeeder extends Seeder
             [
                 'ingredient_id' => 15,
                 'profile_id' => 7,
+            ],
+            [
+                'ingredient_id' => 1,
+                'profile_id' => 8,
+            ],
+            [
+                'ingredient_id' => 2,
+                'profile_id' => 8,
+            ],
+            [
+                'ingredient_id' => 3,
+                'profile_id' => 8,
+            ],
+            [
+                'ingredient_id' => 4,
+                'profile_id' => 9,
+            ],
+            [
+                'ingredient_id' => 5,
+                'profile_id' => 9,
             ],
         ]);
     }

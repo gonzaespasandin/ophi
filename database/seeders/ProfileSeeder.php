@@ -62,6 +62,20 @@ class ProfileSeeder extends Seeder
                 'user_id' => 3,
                 'created_at' => now(),
                 'updated_at' => now(),
+            ],
+            [
+                'id' => 8,
+                'name' => 'Mi perfil user4 NICO',
+                'user_id' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 9,
+                'name' => 'Mi perfil user4 FACU',
+                'user_id' => 5,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         ]);
     }

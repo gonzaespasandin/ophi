@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductController extends Controller
 {
@@ -103,5 +104,13 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-
+    public function getRecomendedProducts(Request $request) {
+        $ingredients = collect($request->userI)
+            ->pluck('ingredient')
+            ->all();
+        $products = Product::with(['ingredients'])->select('id', 'name')->whereDoesntHave('ingredients', function (Builder $query) use ($ingredients) {
+            $query->whereIn('name', $ingredients);
+        })->limit(15)->get();
+        return response()->json($products);
+    }
 }

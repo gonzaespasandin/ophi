@@ -72,25 +72,15 @@ class ProductController extends Controller
 
     public function find_by_name(string $name) {
 
-
+        $name = trim($name);
         // Producto con relación ingredientes donde name = variable name
-        $product = Product::with(['ingredients'])->where('name', $name)->get();
-
-        if($product->isEmpty()) {
-            $name = trim($name);
-            $products = Product::with(['ingredients'])->where('name', 'like', "%$name%")->get();
-
-            if(!$products) {
-                return response('Not Found', 404)->header('Content-Type', 'text/plain');
-            }
-
-            return response()->json($products);
+        $products = Product::with(['ingredients'])->where('name', 'like', "$name%")->get();
+            
+        if(!$products) {
+            return response('Not Found', 404)->header('Content-Type', 'text/plain');
         }
 
-
-
-
-        return response()->json($product);
+        return response()->json($products);
     }
 
     public function find_match_by_name(string $name) {

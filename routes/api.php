@@ -42,6 +42,7 @@ Route::middleware(['auth:sanctum'])
         Route::get('/products/barcode/{barcode}', [ProductController::class, 'find_by_barcode']);
 
         Route::get('/products/name/{name}', [ProductController::class, 'find_by_name']);
+        Route::get('/products/nameandbrand/{name}/{brand}', [ProductController::class, 'find_by_name_and_brand']);
         Route::get('/products/matchedname/{name}', [ProductController::class, 'find_match_by_name']);    
     });
 Route::post('/products/recomended', [ProductController::class, 'getRecomendedProducts']);

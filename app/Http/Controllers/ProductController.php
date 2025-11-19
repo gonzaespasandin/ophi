@@ -83,9 +83,22 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+    public function find_by_name_and_brand(string $name, string $brand) {
+        $brand = trim($brand);
+        $name = trim($name);
+
+        $products = Product::with(['ingredients'])->where([['name', $name], ['brand', $brand]])->get();
+            
+        if(!$products) {
+            return response('Not Found', 404)->header('Content-Type', 'text/plain');
+        }
+
+        return response()->json($products);
+    }
+
     public function find_match_by_name(string $name) {
         $name = trim($name);
-        $products = Product::with(['ingredients'])->select('id', 'name')->where('name', 'like', "$name%")->limit(4)->get();
+        $products = Product::with(['ingredients'])->select('id', 'name', 'brand')->where('name', 'like', "$name%")->limit(4)->get();
         
         if(!$products) {
             return response('Not Found', 404)->header('Content-Type', 'text/plain');

@@ -42,6 +42,17 @@ class IngredientProductSeeder extends Seeder
             ['ingredient_id' => 39, 'product_id' => 6], // Trigo
             ['ingredient_id' => 40, 'product_id' => 6], // Avena
             ['ingredient_id' => 48, 'product_id' => 6], // Sésamo
+
+            // Galletas integrales con avena y sésamo 2 (product_id 5)
+            ['ingredient_id' => 39, 'product_id' => 7], // Trigo
+            ['ingredient_id' => 40, 'product_id' => 7], // Avena
+            ['ingredient_id' => 48, 'product_id' => 7], // Sésamo
+
+            // Galletas integrales con avena y sésamo (product_id 5)
+            ['ingredient_id' => 39, 'product_id' => 8], // Trigo
+            ['ingredient_id' => 53, 'product_id' => 8], // Azúcar
+            ['ingredient_id' => 54, 'product_id' => 8], // Cacao
+            ['ingredient_id' => 55, 'product_id' => 8], // Aceite de Griasol
             
         ]);
     }

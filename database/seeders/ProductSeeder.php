@@ -104,6 +104,37 @@ class ProductSeeder extends Seeder
                 'updated_at' => now(),
                 // Ingredientes: Trigo (39), Avena (40), Sésamo (48)
             ],
+            [
+                'id' => 7,
+                'name' => 'Galletas integrales con avena y sésamo',
+                'name_normalized' => 'galletasintegralesconavenaysesamo',
+                'img' => 'placeholder.jpg',
+                'img_alt' => 'galletas integrales con avena y sésamo',
+                'origin' => 'Buenos Aires',
+                'barcode' => '7791234567055',
+                'rnpa' => '26010595',
+                'brand' => 'Terrabusi',
+                'category' => 'Galletas',
+                'created_at' => now(),
+                'updated_at' => now(),
+                // Ingredientes: Trigo (39), Avena (40), Sésamo (48)
+            ],
+            [
+                'id' => 8,
+                'name' => 'Tortitas sabor chocolate',
+                'name_normalized' => 'tortitassaborchocolate',
+                'img' => 'placeholder.jpg',
+                'img_alt' => 'tortitas sabor chocolate',
+                'origin' => 'Buenos Aires',
+                'barcode' => '7791234567006',
+                'rnpa' => '26010591',
+                'brand' => 'Biscuit Factory',
+                'category' => 'Galletas',
+                'created_at' => now(),
+                'updated_at' => now(),
+                // Ingredientes: Trigo (39), Azúcar (53), Cacao (54), Aceite de Girasol (55)
+            ]
+
         ]);
     }
 }

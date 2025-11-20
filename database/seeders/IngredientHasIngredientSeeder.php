@@ -79,6 +79,10 @@ class IngredientHasIngredientSeeder extends Seeder
                 'belongs_to_id' => 1,
                 'owner_id' => 50,
             ],
+            [
+                'belongs_to_id' => 5,
+                'owner_id' => 50,
+            ],
 
 
 

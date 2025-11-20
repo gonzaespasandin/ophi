@@ -98,7 +98,7 @@ class ProductController extends Controller
 
     public function find_match_by_name(string $name) {
         $name = trim($name);
-        $products = Product::with(['ingredients'])->select('id', 'name', 'brand')->where('name', 'like', "$name%")->limit(4)->get();
+        $products = Product::with(['ingredients'])->select('id', 'name', 'brand', 'barcode')->where('name', 'like', "$name%")->limit(4)->get();
         
         if(!$products) {
             return response('Not Found', 404)->header('Content-Type', 'text/plain');
@@ -111,7 +111,7 @@ class ProductController extends Controller
         $ingredients = collect($request->userI)
             ->pluck('ingredient')
             ->all();
-        $products = Product::with(['ingredients'])->select('id', 'name')->whereDoesntHave('ingredients', function (Builder $query) use ($ingredients) {
+        $products = Product::with(['ingredients'])->select('id', 'name', 'brand')->whereDoesntHave('ingredients', function (Builder $query) use ($ingredients) {
             $query->whereIn('name', $ingredients);
         })->limit(15)->get();
         return response()->json($products);

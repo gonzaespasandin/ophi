@@ -10,7 +10,7 @@ class ProfileController extends Controller
 {
     public function get_auth_user_profiles(): \Illuminate\Http\JsonResponse
     {
-     
+
         Log::debug('Obteniendo los resultados del perfil autenticado');
 
         if (auth()->check()) {
@@ -45,5 +45,23 @@ class ProfileController extends Controller
         return response()->json($profile);
     }
 
-    
+    public function update(int $id, Request $request) {
+        Log::debug('Actualizando el perfil de un usuario autenticado');
+        Log::info('Ingredientes', ['key' => $request->input('ingredients', [])]);
+        Log::info('[]', ['key' => $request['ingredients[]']]);
+
+        $profile = Profile::with('ingredients')->findOrFail($id);
+
+        $profile->ingredients()->sync($request['ingredients'] ?? []);
+        $profile->save();
+
+        return response()->json($profile);
+    }
+
+    public function destroy(int $id) {
+        $profile = Profile::findOrFail($id);
+
+        $profile->ingredients()->detach();
+        $profile->delete();
+    }
 }

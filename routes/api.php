@@ -23,6 +23,8 @@ Route::post('/logout', [AuthController::class, 'logout']);
 /** PROFILES */
 Route::get('/user-profiles', [ProfileController::class, 'get_auth_user_profiles'])->middleware('auth:sanctum');
 Route::post('/profiles', [ProfileController::class, 'store'])->middleware('auth:sanctum');
+Route::put('/profiles/{id}', [ProfileController::class, 'update'])->middleware('auth:sanctum');
+Route::delete('/profiles/{id}', [ProfileController::class, 'destroy'])->middleware('auth:sanctum');
 
 
 
@@ -43,7 +45,7 @@ Route::middleware(['auth:sanctum'])
 
         Route::get('/products/name/{name}', [ProductController::class, 'find_by_name']);
         Route::get('/products/nameandbrand/{name}/{brand}', [ProductController::class, 'find_by_name_and_brand']);
-        Route::get('/products/matchedname/{name}', [ProductController::class, 'find_match_by_name']);    
+        Route::get('/products/matchedname/{name}', [ProductController::class, 'find_match_by_name']);
     });
 Route::post('/products/recomended', [ProductController::class, 'getRecomendedProducts']);
 

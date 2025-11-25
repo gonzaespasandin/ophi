@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\ScannerController;
+use App\Http\Controllers\HistoryController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -52,3 +53,10 @@ Route::post('/products/recomended', [ProductController::class, 'getRecomendedPro
 
 /** ESCANNER */
 Route::post('/scanner/process', [ScannerController::class, 'process'])->middleware('auth:sanctum');
+
+/** HISTORY */
+Route::middleware(['auth:sanctum'])
+    ->group(function () {
+        Route::get('/history', [HistoryController::class, 'index']);
+        Route::post('/history', [HistoryController::class, 'store']);
+    });

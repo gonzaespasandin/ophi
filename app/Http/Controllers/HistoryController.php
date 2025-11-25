@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\History;
+use App\Models\HistoryResult;
+use Illuminate\Support\Facades\DB;
+
+class HistoryController extends Controller
+{
+    public function index() {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'No autenticado'], 401);
+        }
+
+        try {
+            $history = History::with([
+                'product', 'results.profile'
+                ])
+                ->where('user_id', Auth::user()->id)
+                ->orderBy('scanned_at', 'desc')
+                ->get();
+
+            return response()->json($history);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al obtener el historial'], 500);
+        }
+    }
+
+    public function store(Request $request) {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'No autenticado'], 401);
+        }
+
+        $data = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'results' => 'required|array',
+            'results.*.profile_id' => 'required|exists:profiles,id',
+            'results.*.is_safe' => 'required|boolean',
+            'results.*.unsafe_ingredients' => 'nullable|array',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $history = History::create([
+                'user_id' => Auth::user()->id,
+                'product_id' => $data['product_id'],
+                'scanned_at' => now(),
+            ]);
+
+            foreach ($data['results'] as $result) {
+                HistoryResult::create([
+                    'history_id' => $history->id,
+                    'profile_id' => $result['profile_id'],
+                    'is_safe' => $result['is_safe'],
+                    'unsafe_ingredients' => $result['unsafe_ingredients'] ?? [],
+                ]);
+            }
+
+            DB::commit();
+
+            $history->load(['product', 'results.profile']);
+
+            return response()->json([
+                'message' => 'Historial creado correctamente',
+                'data' => $history,
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Error al crear el historial'], 500);
+        }
+    }
+}

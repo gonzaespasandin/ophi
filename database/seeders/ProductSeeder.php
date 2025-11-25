@@ -126,7 +126,7 @@ class ProductSeeder extends Seeder
                 'img' => 'placeholder.jpg',
                 'img_alt' => 'tortitas sabor chocolate',
                 'origin' => 'Buenos Aires',
-                'barcode' => '7791234567006',
+                'barcode' => '7790040677005',
                 'rnpa' => '26010591',
                 'brand' => 'Biscuit Factory',
                 'category' => 'Galletas',

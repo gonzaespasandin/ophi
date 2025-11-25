@@ -16,7 +16,7 @@ class ProfileSeeder extends Seeder
         DB::table('profiles')->insert([
             [
                 'id' => 1,
-                'name' => 'Mi perfil',
+                'name' => 'Administrador',
                 'user_id' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -44,14 +44,14 @@ class ProfileSeeder extends Seeder
             ],
             [
                 'id' => 5,
-                'name' => 'Mi perfil usuario2',
+                'name' => 'Usuario2',
                 'user_id' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' => 6,
-                'name' => 'Mi perfil usuario3',
+                'name' => 'Usuario3',
                 'user_id' => 3,
                 'created_at' => now(),
                 'updated_at' => now(),

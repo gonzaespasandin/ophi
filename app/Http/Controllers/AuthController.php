@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -85,5 +87,42 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return response()->noContent();
+    }
+
+    public function forgot_password(Request $request) {
+        Log::info('------------------------------------------------------------------------------------------');
+        Log::info('[AuthController forgot_password()]');
+        $request->validate(['email' => 'required|email']);
+
+        Log::info('Email validated...');
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        Log::info('Status thing done...', ['status' => $status]);
+        return response()->json(['status' => __($status)]);
+    }
+
+    public function reset_password(Request $request) {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|max:74|regex:/^(?=.*[a-z])(?=.*[A-Z]).+$/'
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                ]);
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        return response()->json(['status' => __($status)]);
     }
 }

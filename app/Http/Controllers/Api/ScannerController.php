@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Services\ScannerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Services\ScannerService;
 
 class ScannerController extends Controller
 {

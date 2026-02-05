@@ -15,18 +15,16 @@ return new class extends Migration
             $table->id();
 
             $table->string('name');
-            $table->string('name_normalized');
-            $table->string('img');
-            $table->string('img_alt');
+            $table->string('name_normalized')->default('');
+            $table->string('img')->nullable();
+            $table->string('img_alt')->nullable();
             $table->string('origin');
 
-            // These two fields won’t be used in any numeric operations, so storing it as VARCHAR makes more sense.
             $table->string('barcode', 15)->unique(); // 13 numbers per barcode
             $table->string('rnpa', 10)->unique(); // 8 numbers per RNPA
 
-            // TODO: Move this to a new table
-            $table->string('brand');
-            $table->string('category');
+            $table->foreignId('brand_id')->cascadeOnUpdate()->restrictOnDelete()->constrained();
+            $table->foreignId('category_id')->cascadeOnUpdate()->restrictOnDelete()->constrained();
 
             $table->timestamps();
         });

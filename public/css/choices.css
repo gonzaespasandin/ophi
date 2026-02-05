@@ -1,0 +1,39 @@
+/* ⚠ AVISO ⚠ Estilos generados por ChatGPT */
+/* TODO: Pulir estos estilos, y corregir el dark mode (hover en el dropdown) */
+
+/* Fondo del select */
+.choices__inner {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Input interno */
+.choices__input {
+    background-color: transparent;
+    color: white;
+}
+
+/* Dropdown */
+.choices__list--dropdown {
+    background-color: #111;
+    border: 1px solid #333;
+}
+
+/* Items del dropdown */
+.choices__item--choice {
+    color: #ddd;
+}
+
+/* Hover en opciones */
+.choices__item--choice.is-highlighted {
+    background-color: #222;
+    color: #fff;
+}
+
+/* Tags en selects múltiples */
+.choices__item--selectable {
+    background-color: #222;
+    border: 1px solid #444;
+    color: #fff;
+}

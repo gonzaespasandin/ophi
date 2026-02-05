@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use App\Models\User;
 use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
@@ -16,28 +18,25 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ],
-        [
-            'email.required' => 'El email es obligatorio',
-                'email.email' => 'El email debe incluir una @',
-            'password.required' => 'La contraseña es obligatoria',
-        ]);
+        $status = AuthService::login($request);
 
+        if ($status === 401) {
+            return response()->json([
+                'message' => 'Las credenciales no coinciden con nuestros registros'
+            ], $status);
+        }
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+        if ($status === 200) {
             return response()->json([
                 'message' => 'Inicio de sesión exitoso',
                 'user' => auth()->user()
-            ], 200);
+            ], $status);
         }
 
         return response()->json([
-            'message' => 'Las credenciales no coinciden con nuestros registros'
-        ], 401);
+            'message' => 'Error no controlado',
+            'status' => $status
+        ]);
     }
 
     public function register(Request $request) {
@@ -80,11 +79,9 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function logout(Request $request) {
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    public function logout(Request $request)
+    {
+        AuthService::logout($request);
 
         return response()->noContent();
     }

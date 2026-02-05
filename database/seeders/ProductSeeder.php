@@ -23,8 +23,8 @@ class ProductSeeder extends Seeder
                 'origin' => 'Mar del Plata',
                 'barcode' => '5901234123457',
                 'rnpa' => '25010584',
-                'brand' => 'Granja del Sol',
-                'category' => 'Pescado',
+                'brand_id' => 1, // Granja del sol
+                'category_id' => 1, // Pescado
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Ingredientes: Merluza (id 12), Huevo (id 2)
@@ -38,8 +38,8 @@ class ProductSeeder extends Seeder
                 'origin' => 'Buenos Aires',
                 'barcode' => '7791234567001',
                 'rnpa' => '26010586',
-                'brand' => 'Baguette Artesanal',
-                'category' => 'Panadería',
+                'brand_id' => 2, // Baguette Artesanal
+                'category_id' => 2, // Panadería
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Ingredientes: Trigo (39), Avena (40), Sésamo (48)
@@ -53,8 +53,8 @@ class ProductSeeder extends Seeder
                 'origin' => 'Buenos Aires',
                 'barcode' => '7791234567002',
                 'rnpa' => '26010587',
-                'brand' => 'Granola Feliz',
-                'category' => 'Cereales',
+                'brand_id' => 3, // 'Granola Feliz'
+                'category_id' => 3,
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Ingredientes: Avena (40), Almendras (44), Leches (50)
@@ -68,8 +68,8 @@ class ProductSeeder extends Seeder
                 'origin' => 'Buenos Aires',
                 'barcode' => '7791234567003',
                 'rnpa' => '26010588',
-                'brand' => 'Dulce Tentación',
-                'category' => 'Repostería',
+                'brand_id' => 4, // 'Dulce Tentación'
+                'category_id' => 4, // Repostería
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Ingredientes: Trigo (39), Huevos (49), Cacahuete (45)
@@ -83,8 +83,8 @@ class ProductSeeder extends Seeder
                 'origin' => 'Buenos Aires',
                 'barcode' => '7791234567004',
                 'rnpa' => '26010589',
-                'brand' => 'Healthy Life',
-                'category' => 'Cereales',
+                'brand_id' => 5, // 'Healthy Life'
+                'category_id' => 3, // Cereales
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Ingredientes: Avena (40), Anacardo (47), Avellana (46)
@@ -98,8 +98,8 @@ class ProductSeeder extends Seeder
                 'origin' => 'Buenos Aires',
                 'barcode' => '7791234567005',
                 'rnpa' => '26010590',
-                'brand' => 'Biscuit Factory',
-                'category' => 'Galletas',
+                'brand_id' => 6,
+                'category_id' => 5, // Galletas
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Ingredientes: Trigo (39), Avena (40), Sésamo (48)
@@ -113,8 +113,8 @@ class ProductSeeder extends Seeder
                 'origin' => 'Buenos Aires',
                 'barcode' => '7791234567055',
                 'rnpa' => '26010595',
-                'brand' => 'Terrabusi',
-                'category' => 'Galletas',
+                'brand_id' => 7, // Terrabusi
+                'category_id' => 5, // Galletas
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Ingredientes: Trigo (39), Avena (40), Sésamo (48)
@@ -128,8 +128,8 @@ class ProductSeeder extends Seeder
                 'origin' => 'Buenos Aires',
                 'barcode' => '7790040677005',
                 'rnpa' => '26010591',
-                'brand' => 'Biscuit Factory',
-                'category' => 'Galletas',
+                'brand_id' => 6,
+                'category_id' => 5, // Galletas
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Ingredientes: Trigo (39), Azúcar (53), Cacao (54), Aceite de Girasol (55)

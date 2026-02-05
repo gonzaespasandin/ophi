@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 
-use App\Models\Profile;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Profile;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -75,7 +76,7 @@ class ProductController extends Controller
         $name = trim($name);
         // Producto con relación ingredientes donde name = variable name
         $products = Product::with(['ingredients'])->where('name', 'like', "$name%")->get();
-            
+
         if(!$products) {
             return response('Not Found', 404)->header('Content-Type', 'text/plain');
         }
@@ -88,7 +89,7 @@ class ProductController extends Controller
         $name = trim($name);
 
         $products = Product::with(['ingredients'])->where([['name', $name], ['brand', $brand]])->get();
-            
+
         if(!$products) {
             return response('Not Found', 404)->header('Content-Type', 'text/plain');
         }
@@ -99,7 +100,7 @@ class ProductController extends Controller
     public function find_match_by_name(string $name) {
         $name = trim($name);
         $products = Product::with(['ingredients'])->select('id', 'name', 'brand', 'barcode')->where('name', 'like', "$name%")->limit(4)->get();
-        
+
         if(!$products) {
             return response('Not Found', 404)->header('Content-Type', 'text/plain');
         }

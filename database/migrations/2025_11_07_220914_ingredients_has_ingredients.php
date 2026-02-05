@@ -13,8 +13,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ingredient_has_ingredients', function (Blueprint $table) {
-            $table->foreignId('belongs_to_id')->constrained(table: 'ingredients', column: 'id');
-            $table->foreignId('owner_id')->constrained(table: 'ingredients', column: 'id');
+            $table->foreignId('belongs_to_id')
+                ->cascadeOnUpdate()->cascadeOnDelete()
+                ->constrained(table: 'ingredients', column: 'id');
+
+            $table->foreignId('owner_id')
+                ->cascadeOnUpdate()->cascadeOnDelete()
+                ->constrained(table: 'ingredients', column: 'id');
+
             $table->primary(['belongs_to_id', 'owner_id']);
 
         });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ingredient;
+use Illuminate\Support\Facades\Log;
 
 class IngredientController extends Controller
 {

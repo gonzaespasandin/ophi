@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Profile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -18,7 +19,7 @@ class ProductController extends Controller
 
     public function find(int $id)
     {
-        $product = Product::with(['ingredients'])->find($id);
+        $product = Product::with(['ingredients', 'brand'])->find($id);
 
         if (!$product) {
             return response()->isNotFound();
@@ -28,7 +29,7 @@ class ProductController extends Controller
     }
 
     public function find_by_barcode(string $barcode) {
-        $product = Product::with(['ingredients'])->where('barcode', $barcode)->limit(1)->first();
+        $product = Product::with(['ingredients', 'brand'])->where('barcode', $barcode)->limit(1)->first();
 
         if (!$product) {
             return response()->isNotFound();
@@ -75,7 +76,7 @@ class ProductController extends Controller
 
         $name = trim($name);
         // Producto con relación ingredientes donde name = variable name
-        $products = Product::with(['ingredients'])->where('name', 'like', "$name%")->get();
+        $products = Product::with(['ingredients', 'brand'])->where('name', 'like', "$name%")->get();
 
         if(!$products) {
             return response('Not Found', 404)->header('Content-Type', 'text/plain');
@@ -88,7 +89,12 @@ class ProductController extends Controller
         $brand = trim($brand);
         $name = trim($name);
 
-        $products = Product::with(['ingredients'])->where([['name', $name], ['brand', $brand]])->get();
+        $products = Product::with(['ingredients', 'brand'])
+            ->where('name', $name)
+            ->orWhereHas('brand', function($query) use ($brand) {
+                $query->where('name', $brand);
+            })
+            ->get();
 
         if(!$products) {
             return response('Not Found', 404)->header('Content-Type', 'text/plain');
@@ -99,7 +105,7 @@ class ProductController extends Controller
 
     public function find_match_by_name(string $name) {
         $name = trim($name);
-        $products = Product::with(['ingredients'])->select('id', 'name', 'brand', 'barcode')->where('name', 'like', "$name%")->limit(4)->get();
+        $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "$name%")->limit(4)->get();
 
         if(!$products) {
             return response('Not Found', 404)->header('Content-Type', 'text/plain');
@@ -112,7 +118,7 @@ class ProductController extends Controller
         $ingredients = collect($request->userI)
             ->pluck('ingredient')
             ->all();
-        $products = Product::with(['ingredients'])->select('id', 'name', 'brand')->whereDoesntHave('ingredients', function (Builder $query) use ($ingredients) {
+        $products = Product::with(['ingredients', 'brand'])->select('id', 'name', 'brand_id')->whereDoesntHave('ingredients', function (Builder $query) use ($ingredients) {
             $query->whereIn('name', $ingredients);
         })->limit(15)->get();
         return response()->json($products);

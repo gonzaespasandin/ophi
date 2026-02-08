@@ -23,6 +23,7 @@ class User extends Authenticatable implements CanResetPasswordContract
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -55,5 +56,10 @@ class User extends Authenticatable implements CanResetPasswordContract
     public function profiles(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Profile::class);
+    }
+
+    public function subscription(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Subscription::class);
     }
 }

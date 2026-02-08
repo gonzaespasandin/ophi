@@ -45,12 +45,13 @@
                 <tr class="align-middle">
                     <td>{{ $user['id'] }}</td>
                     <td>
-                        <a href="{{ route('admin.users.show', ['user' => $user['id']]) }}">
+                        <a href="{{ route('admin.users.show', ['id' => $user['id']]) }}">
                             {{ $user['name'] }}
                         </a>
                     </td>
                     <td>{{ $user['email'] }}</td>
                     <td>{{ __($user['role']) }}</td>
+                    <td><a href="{{ route('admin.users.edit', ['id' => $user['id']])}}">editar rol</a></td>
                 </tr>
             @endforeach
             </tbody>

@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Web\AdminController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\BrandController;
 use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\IngredientController;
+use App\Http\Controllers\Web\PremiumController;
 use App\Http\Controllers\Web\ProductController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Middleware\EnsureIsAdmin;
@@ -23,8 +25,11 @@ Route::post('/logout/', [AuthController::class, 'logout'])
 Route::prefix('/')
     ->middleware(['auth', EnsureIsAdmin::class])
     ->group(function() {
-        Route::view('/', 'admin')
+         Route::get('/', [AdminController::class, 'index'])
             ->name('admin.index');
+
+        Route::get('/stats/users-per-month', [AdminController::class, 'usersPerMonth'])
+            ->name('admin.stats.users');
 
 
         /** PRODUCTS */
@@ -80,13 +85,17 @@ Route::prefix('/')
 
 
         /** PREMIUM */
-        Route::view('/premium', 'premium')
-            ->name('admin.premium');
+        Route::get('/premium', [PremiumController::class, 'index'])
+            ->name('admin.premium.index');
 
 
         /** USERS */
         Route::get('/users', [UserController::class, 'index'])
             ->name('admin.users');
-        Route::get('/users/{user}', [UserController::class, 'show'])
+        Route::get('/users/{id}', [UserController::class, 'show'])
             ->name('admin.users.show');
+        Route::get('/users/{id}/editar', [UserController::class, 'edit'])
+            ->name('admin.users.edit');
+        Route::post('/users/{id}/editar', [UserController::class, 'update'])
+            ->name('admin.users.update');
     });

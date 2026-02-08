@@ -9,11 +9,13 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function index(Request $request) {
-        $query = User::query();
+        $query = User::with('subscription');
 
         if ($request->has('q')) {
-            $query->where('name', 'like', "%{$request->get('q')}%");
-            $query->orWhere('email', 'like', "%{$request->get('q')}%");
+            $query->where(function ($q) use ($request) {
+            $q->where('name', 'like', "%{$request->get('q')}%")
+              ->orWhere('email', 'like', "%{$request->get('q')}%");
+            });
         }
 
         $users = $query->paginate(3)->withQueryString();
@@ -24,9 +26,25 @@ class UserController extends Controller
         ]);
     }
 
-    public function show(User $user) {
+    public function show(int $id) {
         return view('users.show', [
-            'user' => $user,
+            'user' => User::with('subscription')->findOrFail($id),
         ]);
+    }
+
+    public function edit(int $id) {
+        return view('users.edit', [
+            'user' => User::findOrFail($id),
+        ]);
+    }
+
+    public function update(Request $request, int $id) {
+  
+        $request->only('role');
+
+        $user = User::findOrFail($id);
+        $user->update(['role' => $request->input('role')]);
+
+        return to_route('admin.users');
     }
 }

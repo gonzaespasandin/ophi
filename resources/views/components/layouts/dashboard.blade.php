@@ -15,6 +15,14 @@
     {{-- CHOICES (https://github.com/Choices-js/Choices) --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
     <link rel="stylesheet" href="{{ url('css/choices.css') }}">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        >
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/chart.js" defer></script>
+
 </head>
 <body class="min-vh-100">
     <a class="skip-link" href="#main">Saltar al contenido principal</a>
@@ -37,8 +45,8 @@
         </div>
 
         <div class="container-xxl flex-grow-1 d-flex flex-column">
-            <div class="row flex-grow-1">
-                <div class="col-2 p-0">
+            <div class=" column-sm row flex-grow-1">
+                <div class="col-12 col-md-2 p-0">
                     <nav class="container-fluid px-0 h-100 bg-body-tertiary" aria-label="Navegación principal">
                         <div class="list-group list-group-flush">
                             <x-nav-link route="admin.index">Inicio</x-nav-link>
@@ -46,7 +54,7 @@
                             <x-nav-link route="admin.brands">Marcas</x-nav-link>
                             <x-nav-link route="admin.categories">Categorías</x-nav-link>
                             <x-nav-link route="admin.ingredients">Ingredientes</x-nav-link>
-                            <x-nav-link route="admin.premium">Plan Premium</x-nav-link>
+                            <x-nav-link route="admin.premium.index">Plan Premium</x-nav-link>
                             <x-nav-link route="admin.users">Usuarios</x-nav-link>
                         </div>
                     </nav>

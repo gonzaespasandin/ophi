@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Auth\Events\PasswordReset;
@@ -71,6 +72,11 @@ class AuthController extends Controller
         $user->email = trim($data['email']);
         $user->password = Hash::make($data['password']);
         $user->save();
+        Subscription::create([
+            'user_id' => $user->id,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
         Log::info('Usuario registrado', ['user' => $user]);
 
         return response()->json([

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
@@ -27,6 +29,20 @@ class ProfileController extends Controller
     }
 
     public function store(Request $request) {
+
+        //------------ Chequeo de subscription del usuario autenticado
+        $user = User::with(['profiles', 'subscription'])
+        ->find(Auth::id());
+        $userProfiles = $user->profiles;
+
+        if(!$user->isPremium() && count($userProfiles) >= 1) {
+            return response()->json('Usuario no premium');
+        }
+        if($user->isPremium() && count($userProfiles) > 10) {
+            return response()->json('Usuario premium con más de 10 perfiles');
+        }
+        //-------------
+
         Log::debug('Guardando un perfil de un usuario autenticado');
         $data = $request->validate([
             'name' => 'required',

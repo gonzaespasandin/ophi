@@ -62,4 +62,11 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         return $this->hasOne(Subscription::class);
     }
+
+    public function isPremium(): bool {
+        if($this->subscription->plan === 'premium') {
+            return true;
+        }
+        return false;
+    }
 }

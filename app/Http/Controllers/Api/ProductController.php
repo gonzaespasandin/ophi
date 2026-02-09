@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
@@ -73,7 +75,14 @@ class ProductController extends Controller
     }
 
     public function find_by_name(string $name) {
-
+        //---------- Chequeo de premium
+        $user = User::with('subscription')
+        ->find(Auth::id());
+        if(!$user->isPremium()) {
+            return response()->json('Usuario no premium');
+        }
+        //---------- 
+        
         $name = trim($name);
         // Producto con relación ingredientes donde name = variable name
         $products = Product::with(['ingredients', 'brand'])->where('name', 'like', "$name%")->get();
@@ -86,9 +95,17 @@ class ProductController extends Controller
     }
 
     public function find_by_name_and_brand(string $name, string $brand) {
+        //---------- Chequeo de premium
+        $user = User::with('subscription')
+        ->find(Auth::id());
+        if(!$user->isPremium()) {
+            return response()->json('Usuario no premium');
+        }
+        //---------- 
+
         $brand = trim($brand);
         $name = trim($name);
-
+        
         $products = Product::with(['ingredients', 'brand'])
             ->where('name', $name)
             ->orWhereHas('brand', function($query) use ($brand) {
@@ -104,6 +121,14 @@ class ProductController extends Controller
     }
 
     public function find_match_by_name(string $name) {
+        //---------- Chequeo de premium
+        $user = User::with('subscription')
+        ->find(Auth::id());
+        if(!$user->isPremium()) {
+            return response()->json('Usuario no premium');
+        }
+        //---------- 
+        
         $name = trim($name);
         $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "$name%")->limit(4)->get();
 

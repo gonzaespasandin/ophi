@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ScannerController;
+use App\Http\Controllers\Api\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -60,3 +61,9 @@ Route::middleware(['auth:sanctum'])
         Route::get('/history', [HistoryController::class, 'index']);
         Route::post('/history', [HistoryController::class, 'store']);
     });
+
+
+/** SUBSCRIPTION */
+
+Route::get('/subscription', [SubscriptionController::class, 'getSubscription'])
+    ->middleware('auth');

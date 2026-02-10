@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\History;
 use App\Models\HistoryResult;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,20 @@ class HistoryController extends Controller
         }
 
         try {
+            // ---------- Chequeo de premuium 
+            $user = User::with(['subscription'])
+            ->find(Auth::id());
+            if(!$user->isPremium()) {
+                $history = History::with([
+                    'product', 'results.profile'
+                    ])
+                    ->where('user_id', Auth::user()->id)
+                    ->orderBy('scanned_at', 'desc')
+                    ->limit(10)
+                    ->get();
+                return response()->json($history);
+            }
+            // ---------- 
             $history = History::with([
                 'product', 'results.profile'
                 ])

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subscriptions', function (Blueprint $table) {
+        Schema::create('user_has_plan', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('user_id')
@@ -19,9 +19,9 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->unique();
 
-            $table->enum('plan', ['free', 'premium'])->default('free');
+            $table->foreignId('plan_id')->constrained()->cascadeOnDelete();
 
-            $table->unsignedInteger('amount')->default(0); 
+            $table->unsignedBigInteger('amount')->default(0); 
 
             $table->timestamp('expires_at')->nullable(); 
 
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subscriptions');
+        Schema::dropIfExists('user_has_plan');
     }
 };

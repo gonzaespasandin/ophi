@@ -79,7 +79,9 @@ class ProductController extends Controller
         $user = User::with('subscription')
         ->find(Auth::id());
         if(!$user->isPremium()) {
-            return response()->json('Usuario no premium');
+            return view('subscription.index', [
+                'message' => 'Desbloqueá el premium para buscar productos!'
+            ]);
         }
         //---------- 
         
@@ -99,7 +101,9 @@ class ProductController extends Controller
         $user = User::with('subscription')
         ->find(Auth::id());
         if(!$user->isPremium()) {
-            return response()->json('Usuario no premium');
+            return view('subscription.index', [
+                'message' => 'Desbloqueá el premium para buscar productos!'
+            ]);
         }
         //---------- 
 
@@ -125,10 +129,12 @@ class ProductController extends Controller
         $user = User::with('subscription')
         ->find(Auth::id());
         if(!$user->isPremium()) {
-            return response()->json('Usuario no premium');
+            return view('subscription.index', [
+                'message' => 'Desbloqueá el premium para buscar productos!'
+            ]);
         }
         //---------- 
-        
+
         $name = trim($name);
         $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "$name%")->limit(4)->get();
 

@@ -26,54 +26,6 @@ class IngredientProfileSeeder extends Seeder
                 'ingredient_id' =>3,
                 'profile_id' => 2,
             ],
-            [
-                'ingredient_id' => 3,
-                'profile_id' => 3,
-            ],
-            // [
-            //     'ingredient_id' => 4,
-            //     'profile_id' => 3,
-            // ],
-            [
-                'ingredient_id' => 39,
-                'profile_id' => 4,
-            ],
-            [
-                'ingredient_id' => 42,
-                'profile_id' => 4,
-            ],
-            [
-                'ingredient_id' => 2,
-                'profile_id' => 5,
-            ],
-            [
-                'ingredient_id' => 2,
-                'profile_id' => 6,
-            ],
-            [
-                'ingredient_id' => 15,
-                'profile_id' => 7,
-            ],
-            [
-                'ingredient_id' => 1,
-                'profile_id' => 8,
-            ],
-            [
-                'ingredient_id' => 2,
-                'profile_id' => 8,
-            ],
-            [
-                'ingredient_id' => 3,
-                'profile_id' => 8,
-            ],
-            [
-                'ingredient_id' => 4,
-                'profile_id' => 9,
-            ],
-            [
-                'ingredient_id' => 5,
-                'profile_id' => 9,
-            ],
         ]);
     }
 }

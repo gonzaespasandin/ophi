@@ -11,6 +11,6 @@ use Illuminate\Support\Facades\Auth;
 class SubscriptionController extends Controller
 {
     public function getSubscription() {
-        return Subscription::where('user_id', Auth::id())->first();
+        return Subscription::with('plan')->where('user_id', Auth::id())->first();
     }
 }

@@ -74,6 +74,7 @@ class AuthController extends Controller
         $user->save();
         Subscription::create([
             'user_id' => $user->id,
+            'plan_id' => 1,
             'created_at' => now(),
             'updated_at' => now()
         ]);

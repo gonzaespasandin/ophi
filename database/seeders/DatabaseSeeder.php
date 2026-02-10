@@ -29,7 +29,8 @@ class DatabaseSeeder extends Seeder
             IngredientProductSeeder::class,
             IngredientProfileSeeder::class,
             IngredientHasIngredientSeeder::class,
-            SubscriptionSeeder::class,
+            PlanSeeder::class,
+            UserPlanSeeder::class,
         ]);
     }
 }

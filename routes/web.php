@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Web\AdminController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\BrandController;
@@ -87,6 +88,7 @@ Route::prefix('/')
         /** PREMIUM */
         Route::get('/premium', [PremiumController::class, 'index'])
             ->name('admin.premium.index');
+   
 
 
         /** USERS */

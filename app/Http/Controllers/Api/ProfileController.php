@@ -36,10 +36,14 @@ class ProfileController extends Controller
         $userProfiles = $user->profiles;
 
         if(!$user->isPremium() && count($userProfiles) >= 1) {
-            return response()->json('Usuario no premium');
+            return view('subscription.index', [
+                'message' => 'Desbloqueá el premium para obtener más perfiles'
+            ]);
         }
         if($user->isPremium() && count($userProfiles) > 10) {
-            return response()->json('Usuario premium con más de 10 perfiles');
+            return view('subscription.index', [
+                'message' => 'No más de 10 perfiles por usuario!'
+            ]);
         }
         //-------------
 
@@ -47,7 +51,12 @@ class ProfileController extends Controller
         $data = $request->validate([
             'name' => 'required',
             'ingredients' => 'required',
+        ],
+        [
+            'name.required' => 'El nombre es obligatorio',
+            'ingredients.required' => 'Al menos 1 ingrediente debe estar seleccionado'
         ]);
+        
         Log::debug('La validación es correcta');
         Log::info('Datos del perfil:', ['data' => $data]);
 

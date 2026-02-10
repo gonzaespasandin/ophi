@@ -64,7 +64,7 @@ class User extends Authenticatable implements CanResetPasswordContract
     }
 
     public function isPremium(): bool {
-        if($this->subscription->plan === 'premium') {
+        if($this->subscription->plan_id === 2) {
             return true;
         }
         return false;

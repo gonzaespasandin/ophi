@@ -2,34 +2,36 @@
 
 namespace Database\Seeders;
 
-use App\Models\Subscription;
+
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
-class SubscriptionSeeder extends Seeder
+class UserPlanSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-       Subscription::insert([
+       FacadesDB::table('user_has_plan')->insert([
         [
             'user_id'    => 1,
-            'plan'       => 'free',
-            'amount'     => 0,
-            'expires_at' => null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-        [
-            'user_id'    => 2,
-            'plan'       => 'premium',
+            'plan_id'       => 2,
             'amount'     => 4999,
             'expires_at' => now()->addDays(30),
             'created_at' => now(),
             'updated_at' => now(),
         ],
+        [
+            'user_id'    => 2,
+            'plan_id'       => 1,
+            'amount'     => 0,
+            'expires_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+
     ]);
     }
 }

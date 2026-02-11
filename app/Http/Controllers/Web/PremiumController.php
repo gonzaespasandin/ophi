@@ -12,7 +12,7 @@ class PremiumController extends Controller
         return view('premium.index', [
             'premiumUsers' => User::with('subscription')
                             ->whereHas('subscription', function ($query) {
-                                $query->where('plan', 'premium');
+                                $query->where('plan_id', 2);
                             })
                             ->get(),
         ]);

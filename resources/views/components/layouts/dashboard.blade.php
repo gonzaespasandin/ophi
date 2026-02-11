@@ -48,7 +48,7 @@
             <div class=" column-sm row flex-grow-1">
                 <div class="col-12 col-md-2 p-0">
                     <nav class="container-fluid px-0 h-100 bg-body-tertiary" aria-label="Navegación principal">
-                        <div class="list-group list-group-flush">
+                        <div class="list-group list-group-flush" id="nav">
                             <x-nav-link route="admin.index">Inicio</x-nav-link>
                             <x-nav-link route="admin.products">Productos</x-nav-link>
                             <x-nav-link route="admin.brands">Marcas</x-nav-link>
@@ -60,7 +60,7 @@
                     </nav>
                 </div>
                 <div class="col p-0">
-                    <main id="main" class="bg-body container-fluid h-100 pt-2">
+                    <main id="main" class=" container-fluid h-100 pt-2">
                         {{ $slot }}
                     </main>
                 </div>

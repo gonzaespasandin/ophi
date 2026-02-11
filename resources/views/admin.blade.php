@@ -1,50 +1,69 @@
 <x-layouts.dashboard>
-    <h1>Bienvenido al Panel de Administración de ophi</h1>
-    <div class="dashboard">
+
+  <div class="dashboard">
 
 
-  <main class="main">
-
-    <header class="header">
+  <div class="main">
+    <div class="header border-bottom">
       <h1>Dashboard</h1>
       <div class="user">
         <i class="fa-solid fa-user"></i>
       </div>
-    </header>
+    </div>
 
     <!-- Cards -->
     <section class="cards">
       <div class="card">
         <i class="fa-solid fa-users"></i>
         <div>
-          <h3>Usuarios</h3>
-          <span id="users-count">{{ $users }}</span>
+          <h3 class="fw-normal">Usuarios</h3>
+          <span id="users-count" class="d-block text-center fs-2">{{ $users }}</span>
         </div>
       </div>
 
       <div class="card">
         <i class="fa-solid fa-box"></i>
         <div>
-          <h3>Productos</h3>
-          <span id="products-count">{{ $products }}</span>
+          <h3 class="fw-normal">Productos</h3>
+          <span id="products-count" class="d-block text-center  fs-2">{{ $products }}</span>
         </div>
       </div>
 
       <div class="card">
         <i class="fa-solid fa-users"></i>
         <div>
-          <h3>Usuarios últ. mes</h3>
-          <span id="users-count">1.245</span>
+          <h3 class="fw-normal">Usuarios últ. mes</h3>
+          <span id="users-count" class="d-block text-center fs-2">{{$usersLastMonth}}</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <i class="fa-solid fa-barcode"></i>
+        <div>
+          <h3 class="fw-normal">Escaneos efectivos</h3>
+          <span id="users-count" class="d-block text-center fs-2">{{$effectiveScans}}</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <i class="fa-solid fa-star"></i>
+        <div>
+          <h3 class="fw-normal">Usuarios premium</h3>
+          <span id="users-count" class="d-block text-center fs-2">{{$premiumUsers}}</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <i class="fa-solid fa-money-bill"></i>
+        <div>
+          <h3 class="fw-normal">Dinero total</h3>
+          <span id="users-count" class="d-block text-center fs-2">${{$totalMoney}}</span>
         </div>
       </div>
     </section>
 
     <canvas id="usersChart" width="400" height="200"></canvas>
-
-
-
-
-  </main>
+  </div>
 </div>
 
 

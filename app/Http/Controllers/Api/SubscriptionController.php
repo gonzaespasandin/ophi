@@ -13,4 +13,5 @@ class SubscriptionController extends Controller
     public function getSubscription() {
         return Subscription::with('plan')->where('user_id', Auth::id())->first();
     }
+
 }

@@ -88,7 +88,10 @@ Route::prefix('/')
         /** PREMIUM */
         Route::get('/premium', [PremiumController::class, 'index'])
             ->name('admin.premium.index');
-   
+        Route::post('/premium/{id}/cancel', [PremiumController::class, 'cancel'])
+            ->name('admin.premium.index');
+
+
 
 
         /** USERS */

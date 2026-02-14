@@ -37,7 +37,7 @@ class HistoryController extends Controller
                 ])
                 ->where('user_id', Auth::user()->id)
                 ->orderBy('scanned_at', 'desc')
-                ->get();
+                ->paginate(10);
 
             return response()->json($history);
         } catch (\Exception $e) {

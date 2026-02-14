@@ -17,4 +17,8 @@ class PremiumController extends Controller
                             ->get(),
         ]);
     }
+
+    public function cancel() {
+        
+    }
 }

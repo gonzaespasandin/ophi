@@ -68,7 +68,10 @@ class ProfileController extends Controller
 
         $profile->ingredients()->attach($data['ingredients'] ?? []);
 
-        return response()->json($profile);
+       return response()->json([
+            'feedback' => 'Perfil creado correctamente',
+            'profile' => $profile
+        ]);
     }
 
     public function update(int $id, Request $request) {
@@ -81,7 +84,10 @@ class ProfileController extends Controller
         $profile->ingredients()->sync($request['ingredients'] ?? []);
         $profile->save();
 
-        return response()->json($profile);
+        return response()->json([
+            'feedback' => 'Perfil guardado',
+            'profile' => $profile
+        ]);
     }
 
     public function destroy(int $id) {

@@ -1,8 +1,5 @@
 <x-layouts.dashboard>
-
   <div class="dashboard">
-
-
   <div class="main">
     <div class="header border-bottom">
       <h1>Dashboard</h1>
@@ -10,8 +7,6 @@
         <i class="fa-solid fa-user"></i>
       </div>
     </div>
-
-    <!-- Cards -->
     <section class="cards">
       <div class="card">
         <i class="fa-solid fa-users"></i>
@@ -65,7 +60,4 @@
     <canvas id="usersChart" width="400" height="200"></canvas>
   </div>
 </div>
-
-
-
 </x-layouts.dashboard>

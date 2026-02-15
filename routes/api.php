@@ -60,6 +60,8 @@ Route::middleware(['auth:sanctum'])
     ->group(function () {
         Route::get('/history', [HistoryController::class, 'index']);
         Route::post('/history', [HistoryController::class, 'store']);
+        Route::get('/history/latest', [HistoryController::class, 'getLatestScans']);
+        Route::get('/history/count', [HistoryController::class, 'countScans']);
     });
 
 

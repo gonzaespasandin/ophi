@@ -89,4 +89,28 @@ class HistoryController extends Controller
             return response()->json(['message' => 'Error al crear el historial'], 500);
         }
     }
+
+    public function getLatestScans() {
+        $history = History::with([
+                'product', 'results.profile'
+                ])
+                ->where('user_id', Auth::user()->id)
+                ->orderBy('scanned_at', 'desc')
+                ->limit(3) 
+                ->get();
+
+        return response()->json($history);
+    }
+
+    public function countScans() {
+        $historyCount = History::
+                  where('user_id', Auth::user()->id)
+                ->count();
+        
+        return response()->json($historyCount);
+    }
+
+    public function searchByName(string $name) {
+        
+    }
 }

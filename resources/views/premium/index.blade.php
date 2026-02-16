@@ -1,5 +1,8 @@
 <x-layouts.dashboard>
     <h1>Usuarios premium</h1>
+
+    <a class="btn btn-primary mb-3" href="{{ route('admin.premium.give') }}">Dar premium 1 usuario</a>
+
     <div class=" table-responsive">
         <table class="table table-striped">
             <thead>
@@ -20,11 +23,10 @@
                     <td>${{$user['subscription']['amount']}}</td>
                     <td>{{ $user['subscription']['expires_at']}} ({{ ceil(now()->floatDiffInDays($user->subscription->expires_at)) }} días)</td>
                     <td>{{ $user['subscription']['updated_at']}}</td>
-                    <td><a href="{{ route('admin.users.edit', ['id' => $user['id']])}}">Cancelar suscripción</a></td>
+                    <td><a href="{{ route('admin.premium.cancel', ['user' => $user['id']])}}">Cancelar suscripción</a></td>
                 </tr>
             @endforeach
             </tbody>
         </table>
     </div>
 </x-layouts.dashboard>
- 

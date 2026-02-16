@@ -13,6 +13,10 @@ class IngredientService {
      */
     static public function getParentIngredients($ingredientIds)
     {
+        if (count($ingredientIds) === 0) {
+            return collect();
+        }
+
         $placeholder = implode(',', array_fill(0, count($ingredientIds), '?'));
 
         $query = "
@@ -43,6 +47,10 @@ class IngredientService {
      * @return \Illuminate\Support\Collection
      */
     static public function getChildrenIngredients($ingredientIds) {
+        if (count($ingredientIds) === 0) {
+            return collect();
+        }
+
         $placeholder = implode(',', array_fill(0, count($ingredientIds), '?'));
 
         $query = "

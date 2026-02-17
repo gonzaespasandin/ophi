@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Profile;
 use App\Models\User;
+use App\Services\ProductService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,8 +84,8 @@ class ProductController extends Controller
                 'message' => 'Desbloqueá el premium para buscar productos!'
             ]);
         }
-        //---------- 
-        
+        //----------
+
         $name = trim($name);
         // Producto con relación ingredientes donde name = variable name
         $products = Product::with(['ingredients', 'brand'])->where('name', 'like', "$name%")->get();
@@ -105,11 +106,11 @@ class ProductController extends Controller
                 'message' => 'Desbloqueá el premium para buscar productos!'
             ]);
         }
-        //---------- 
+        //----------
 
         $brand = trim($brand);
         $name = trim($name);
-        
+
         $products = Product::with(['ingredients', 'brand'])
             ->where('name', $name)
             ->orWhereHas('brand', function($query) use ($brand) {
@@ -118,6 +119,12 @@ class ProductController extends Controller
             ->get();
 
      
+
+        $safeProducts = ProductService::getSafeProducts(
+            category_id: $products[0]->category_id,
+            avoidProduct: $products[0]->id
+        );
+        $products['safeProducts'] = $safeProducts;
 
         return response()->json($products);
     }
@@ -131,7 +138,7 @@ class ProductController extends Controller
                 'message' => 'Desbloqueá el premium para buscar productos!'
             ]);
         }
-        //---------- 
+        //----------
 
         $name = trim($name);
         $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "$name%")->limit(4)->get();

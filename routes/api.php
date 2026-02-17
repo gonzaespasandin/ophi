@@ -62,6 +62,7 @@ Route::middleware(['auth:sanctum'])
         Route::post('/history', [HistoryController::class, 'store']);
         Route::get('/history/latest', [HistoryController::class, 'getLatestScans']);
         Route::get('/history/count', [HistoryController::class, 'countScans']);
+        Route::get('/history/name/{name}', [HistoryController::class, 'searchByName']);
     });
 
 

@@ -117,9 +117,7 @@ class ProductController extends Controller
             })
             ->get();
 
-        if(!$products) {
-            return response('Not Found', 404)->header('Content-Type', 'text/plain');
-        }
+     
 
         return response()->json($products);
     }
@@ -146,12 +144,15 @@ class ProductController extends Controller
     }
 
     public function getRecomendedProducts(Request $request) {
+        $maxId = Product::max('id');
+        $randomId = rand(1, $maxId);
+
         $ingredients = collect($request->userI)
             ->pluck('ingredient')
             ->all();
-        $products = Product::with(['ingredients', 'brand'])->select('id', 'name', 'brand_id')->whereDoesntHave('ingredients', function (Builder $query) use ($ingredients) {
+        $products = Product::with(['ingredients', 'brand'])->select('id', 'name', 'brand_id')->where('id', '>=', $randomId)->whereDoesntHave('ingredients', function (Builder $query) use ($ingredients) {
             $query->whereIn('name', $ingredients);
-        })->limit(15)->get();
+        })->limit(10)->get();
         return response()->json($products);
     }
 }

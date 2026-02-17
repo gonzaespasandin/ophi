@@ -111,6 +111,21 @@ class HistoryController extends Controller
     }
 
     public function searchByName(string $name) {
+        $user = User::with(['subscription'])
+        ->find(Auth::id());
+        if(!$user->isPremium()) {
+            return response()->json(['message' => 'Usuario no premium']);
+        }
+        $history = History::with([
+                'product', 'results.profile'
+                ])
+                ->where('user_id', Auth::user()->id)
+                 ->whereHas('product', function ($query) use ($name) {
+                    $query->where('name', 'like', "%$name%");
+                })
+                ->limit(10)
+                ->get();
         
+        return response()->json($history);
     }
 }

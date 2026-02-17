@@ -113,13 +113,17 @@ class ProductController extends Controller
 
         $products = Product::with(['ingredients', 'brand'])
             ->where('name', $name)
-            ->orWhereHas('brand', function($query) use ($brand) {
+            ->whereHas('brand', function($query) use ($brand) {
                 $query->where('name', $brand);
             })
             ->get();
 
-     
-
+        if ($products->isEmpty()) {
+            return response()->json([
+                'message' => 'Product not found'
+            ], 404);
+        }
+        
         $safeProducts = ProductService::getSafeProducts(
             category_id: $products[0]->category_id,
             avoidProduct: $products[0]->id

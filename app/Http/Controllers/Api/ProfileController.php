@@ -50,11 +50,9 @@ class ProfileController extends Controller
         Log::debug('Guardando un perfil de un usuario autenticado');
         $data = $request->validate([
             'name' => 'required',
-            'ingredients' => 'required',
         ],
         [
             'name.required' => 'El nombre es obligatorio',
-            'ingredients.required' => 'Al menos 1 ingrediente debe estar seleccionado'
         ]);
         
         Log::debug('La validación es correcta');
@@ -95,5 +93,9 @@ class ProfileController extends Controller
 
         $profile->ingredients()->detach();
         $profile->delete();
+
+        return response()->json([
+            'feedback' => 'Perfil eliminado'
+        ]);
     }
 }

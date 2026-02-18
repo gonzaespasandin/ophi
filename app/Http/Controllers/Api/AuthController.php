@@ -10,6 +10,7 @@ use App\Services\AuthService;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
@@ -67,17 +68,21 @@ class AuthController extends Controller
         ]);
         Log::debug('Todo bien en la validación :d');
 
-        $user = new User();
-        $user->name = trim($data['name']);
-        $user->email = trim($data['email']);
-        $user->password = Hash::make($data['password']);
-        $user->save();
-        Subscription::create([
-            'user_id' => $user->id,
-            'plan_id' => 1,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        $user = DB::transaction(function () use ($data) {
+            $user = new User();
+            $user->name = trim($data['name']);
+            $user->email = trim($data['email']);
+            $user->password = Hash::make($data['password']);
+            $user->save();
+            Subscription::create([
+                'user_id' => $user->id,
+                'plan_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            return $user;
+        });
         Log::info('Usuario registrado', ['user' => $user]);
 
         return response()->json([

@@ -53,7 +53,14 @@ Route::post('/products/recomended', [ProductController::class, 'getRecomendedPro
 
 
 /** ESCANNER */
-Route::post('/scanner/process', [ScannerController::class, 'process'])->middleware('auth:sanctum');
+Route::middleware(['auth:sanctum'])
+    ->group(function () {
+        Route::post('/scanner/process', [ScannerController::class, 'process']);
+        Route::get('/scanner/can-suggest', [ScannerController::class, 'canSuggest']);
+        Route::post('/scanner/suggest', [ScannerController::class, 'suggest']);
+        Route::get('/scanner/pending-barcode', [ScannerController::class, 'getPendingBarcode']);
+        Route::delete('/scanner/clear-pending-barcode', [ScannerController::class, 'clearPendingBarcode']);
+    });
 
 /** HISTORY */
 Route::middleware(['auth:sanctum'])

@@ -133,6 +133,20 @@ class ProductSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
                 // Ingredientes: Trigo (39), Azúcar (53), Cacao (54), Aceite de Girasol (55)
+            ],
+            [
+                'id' => 9,
+                'name' => 'Coca Cola 500ml',
+                'name_normalized' => 'cocacola500ml',
+                'img' => 'placeholder.jpg',
+                'img_alt' => 'botella de Coca Cola 500ml',
+                'origin' => 'Buenos Aires',
+                'barcode' => null,
+                'rnpa' => '26010600',
+                'brand_id' => 1,
+                'category_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
 
         ]);

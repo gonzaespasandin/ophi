@@ -14,10 +14,4 @@ class SubscriptionController extends Controller
     public function getSubscription() {
         return Subscription::with('plan')->where('user_id', Auth::id())->first();
     }
-
-    public function subscribeEmailFromLanding(Request $request) {
-        Log::info('Subscribing email from landing: '. $request->input('email'));
-
-        return response()->noContent();
-    }
 }

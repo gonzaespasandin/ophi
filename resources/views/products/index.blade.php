@@ -8,9 +8,10 @@
 <x-layouts.dashboard>
     <x-slot:title>Productos</x-slot:title>
 
-    <h1>Productos</h1>
-
-    <a href="{{ route('admin.products.create') }}">Añadir nuevo producto</a>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Productos</h1>
+        <a class="btn btn-primary" href="{{ route('admin.products.create') }}"><i class="fa-solid fa-plus"></i> Añadir nuevo producto</a>
+    </div>
 
     <form action="{{ route('admin.products') }}" method="get">
         <h2 class="visually-hidden">Buscador</h2>
@@ -57,20 +58,22 @@
                         <td>{{ $product['barcode'] }}</td>
                         <td>{{ $product['rnpa'] }}</td>
                         <td>{{ join(', ', array_map(fn($i) => $i['name'], $product['ingredients']->toArray())) }}</td>
-                        <td class="d-flex gap-2 justify-content-end align-items-center">
-                            <a
-                                class="btn btn-primary"
-                                href="{{ route('admin.products.edit', ['id' => $product['id']]) }}"
-                                title="Editar producto"
-                            ><x-icons.edit /></a>
-                            <button
-                                class="btn btn-danger"
-                                title="Eliminar producto"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modal-confirm-delete"
-                                data-id="{{ $product['id'] }}"
-                                data-name="{{ $product['name'] }}"
-                            ><x-icons.trash /></button>
+                        <td>
+                            <div class="d-flex gap-2 justify-content-end align-items-center">
+                                <a
+                                    class="btn btn-primary"
+                                    href="{{ route('admin.products.edit', ['id' => $product['id']]) }}"
+                                    title="Editar producto"
+                                ><x-icons.edit /></a>
+                                <button
+                                    class="btn btn-danger"
+                                    title="Eliminar producto"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modal-confirm-delete"
+                                    data-id="{{ $product['id'] }}"
+                                    data-name="{{ $product['name'] }}"
+                                ><x-icons.trash /></button>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

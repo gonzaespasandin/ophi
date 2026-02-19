@@ -5,9 +5,10 @@
 ?>
 
 <x-layouts.dashboard>
-    <h1>Ingredientes</h1>
-
-    <a href="{{ route('admin.ingredients.create') }}">Añadir nuevo ingrediente</a>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Ingredientes</h1>
+        <a class="btn btn-primary" href="{{ route('admin.ingredients.create') }}"><i class="fa-solid fa-plus"></i> Añadir nuevo ingrediente</a>
+    </div>
 
     <form action="{{ route('admin.ingredients') }}" method="get">
         <h2 class="visually-hidden">Buscador</h2>
@@ -50,20 +51,22 @@
                         <td>{{ $ingredient->ingredients()->count() ? 'Si' : 'No' }}</td>
                         <td>{{ $ingredient['aliases'] ? $ingredient['aliases'] : '-' }}</td>
                         <td>{{ join(', ', array_map(fn($i) => $i['name'], $ingredient['ingredients']->toArray())) }}</td>
-                        <td class="d-flex gap-2 justify-content-end align-items-center">
-                            <a
-                                class="btn btn-primary"
-                                href="{{ route('admin.ingredients.edit', ['id' => $ingredient['id']]) }}"
-                                title="Editar ingrediente"
-                            ><x-icons.edit /></a>
-                            <button
-                                class="btn btn-danger"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modal-confirm-delete"
-                                data-name="{{ $ingredient['name'] }}"
-                                data-id="{{ $ingredient['id'] }}"
-                                title="Eliminar ingrediente"
-                            ><x-icons.trash /></button>
+                        <td>
+                            <div class="d-flex gap-2 justify-content-end align-items-center">
+                                <a
+                                    class="btn btn-primary"
+                                    href="{{ route('admin.ingredients.edit', ['id' => $ingredient['id']]) }}"
+                                    title="Editar ingrediente"
+                                ><x-icons.edit /></a>
+                                <button
+                                    class="btn btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modal-confirm-delete"
+                                    data-name="{{ $ingredient['name'] }}"
+                                    data-id="{{ $ingredient['id'] }}"
+                                    title="Eliminar ingrediente"
+                                ><x-icons.trash /></button>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

@@ -51,23 +51,25 @@
                 <tr class="align-middle">
                     <td>{{ $brand['id'] }}</td>
                     <td>{{ $brand['name'] }}</td>
-                    <td class="d-flex gap-2 justify-content-end align-items-center">
-                        <button
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal-edit-inline"
-                            data-name="{{ $brand['name'] }}"
-                            data-id="{{ $brand['id'] }}"
-                            title="Editar marca"
-                        ><x-icons.edit /></button>
-                        <button
-                            class="btn btn-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal-confirm-delete"
-                            data-name="{{ $brand['name'] }}"
-                            data-id="{{ $brand['id'] }}"
-                            title="Eliminar marca"
-                        ><x-icons.trash /></button>
+                    <td>
+                        <div class="d-flex gap-2 align-items-center">
+                            <button
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-edit-inline"
+                                data-name="{{ $brand['name'] }}"
+                                data-id="{{ $brand['id'] }}"
+                                title="Editar marca"
+                            ><x-icons.edit /></button>
+                            <button
+                                class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-confirm-delete"
+                                data-name="{{ $brand['name'] }}"
+                                data-id="{{ $brand['id'] }}"
+                                title="Eliminar marca"
+                            ><x-icons.trash /></button>
+                        </div>
                     </td>
                 </tr>
             @endforeach

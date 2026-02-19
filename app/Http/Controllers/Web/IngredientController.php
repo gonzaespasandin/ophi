@@ -18,7 +18,7 @@ class IngredientController extends Controller
                 ->orWhere('aliases', 'LIKE', "%{$request->get('q')}%");
         }
 
-        $ingredients = $query->paginate(25)->withQueryString();
+        $ingredients = $query->paginate(10)->withQueryString();
 
         return view('ingredients.index', [
             'ingredients' => $ingredients,
@@ -126,5 +126,22 @@ class IngredientController extends Controller
         $ingredient->delete();
 
         return to_route('admin.ingredients');
+    }
+
+    public function storeAjax(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'aliases' => 'nullable|string|max:255',
+        ]);
+
+        $ingredient = new Ingredient();
+        $ingredient['name'] = $request->get('name');
+        $ingredient['aliases'] = $request->get('aliases') ?? '';
+        $ingredient->save();
+
+        return response()->json([
+            'id' => $ingredient->id,
+            'name' => $ingredient->name,
+        ]);
     }
 }

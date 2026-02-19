@@ -18,7 +18,7 @@ class ProductController extends Controller
             $query->where('name', 'like', "%{$request->get('q')}%");
         }
 
-        $products = $query->paginate(2)->withQueryString();
+        $products = $query->paginate(10)->withQueryString();
 
         return view('products.index', [
             'products' => $products,

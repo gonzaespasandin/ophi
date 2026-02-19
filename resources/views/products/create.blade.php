@@ -181,6 +181,8 @@
         <button class="btn btn-primary">Añadir producto</button>
     </form>
 
+    <x-ingredient-modal />
+
     <script defer src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script defer src="{{ url('js/product-create-form.js') }}"></script>
 </x-layouts.dashboard>

@@ -83,6 +83,8 @@ Route::prefix('/')
             ->name('admin.ingredients.update');
         Route::delete('/ingredients/', [IngredientController::class, 'destroy'])
             ->name('admin.ingredients.destroy');
+        Route::post('/ingredients/create-ajax', [IngredientController::class, 'storeAjax'])
+            ->name('admin.ingredients.store-ajax');
 
 
         /** PREMIUM */

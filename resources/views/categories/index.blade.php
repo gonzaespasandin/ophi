@@ -51,23 +51,25 @@
                 <tr class="align-middle">
                     <td>{{ $category['id'] }}</td>
                     <td>{{ $category['name'] }}</td>
-                    <td class="d-flex gap-2 justify-content-end align-items-center">
-                        <button
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal-edit-inline"
-                            data-name="{{ $category['name'] }}"
-                            data-id="{{ $category['id'] }}"
-                            title="Editar categoría"
-                        ><x-icons.edit /></button>
-                        <button
-                            class="btn btn-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal-confirm-delete"
-                            data-name="{{ $category['name'] }}"
-                            data-id="{{ $category['id'] }}"
-                            title="Eliminar categoría"
-                        ><x-icons.trash /></button>
+                    <td>
+                        <div class="d-flex gap-2 align-items-center">
+                            <button
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-edit-inline"
+                                data-name="{{ $category['name'] }}"
+                                data-id="{{ $category['id'] }}"
+                                title="Editar categoría"
+                            ><x-icons.edit /></button>
+                            <button
+                                class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-confirm-delete"
+                                data-name="{{ $category['name'] }}"
+                                data-id="{{ $category['id'] }}"
+                                title="Eliminar categoría"
+                            ><x-icons.trash /></button>
+                        </div>
                     </td>
                 </tr>
             @endforeach

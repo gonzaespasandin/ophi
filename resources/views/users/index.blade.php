@@ -38,6 +38,7 @@
                 <th>Nombre</th>
                 <th>Correo electrónico</th>
                 <th>Rol</th>
+                <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
@@ -51,7 +52,7 @@
                     </td>
                     <td>{{ $user['email'] }}</td>
                     <td>{{ __($user['role']) }}</td>
-                    <td><a href="{{ route('admin.users.edit', ['id' => $user['id']])}}">editar rol</a></td>
+                    <td><a class="btn btn-primary" href="{{ route('admin.users.edit', ['id' => $user['id']])}}"><i class="fa-solid fa-pen-to-square"></i> Editar rol</a></td>
                 </tr>
             @endforeach
             </tbody>

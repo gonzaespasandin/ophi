@@ -2,6 +2,7 @@
 <html lang="es" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Panel de Administración' }} | ophi</title>
 
@@ -29,7 +30,7 @@
 
     <div class="d-flex flex-column min-vh-100">
         <div class="bg-body-secondary">
-            <header class="container-xxl d-flex justify-content-between align-items-center py-3">
+            <header class="container-fluid d-flex justify-content-between align-items-center py-3">
                 <a href="{{ route('admin.index') }}">
                     <img src="{{ url('img/ophi-logo-white.svg') }}" alt="Logo de ophi">
                 </a>
@@ -44,7 +45,7 @@
             </header>
         </div>
 
-        <div class="container-xxl flex-grow-1 d-flex flex-column">
+        <div class="container-fluid flex-grow-1 d-flex flex-column">
             <div class=" column-sm row flex-grow-1">
                 <div class="col-12 col-md-2 p-0">
                     <nav class="container-fluid px-0 h-100 bg-body-tertiary" aria-label="Navegación principal">

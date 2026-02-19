@@ -149,12 +149,6 @@ class ProductController extends Controller
         $name = trim($name);
         $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "$name%")->limit(4)->get();
 
-        if($products->isEmpty()) {
-            return response()->json([
-                'message' => 'Product not found'
-            ], 404);
-        }
-
         return response()->json($products);
     }
 

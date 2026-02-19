@@ -48,6 +48,7 @@ class ProfileController extends Controller
         Log::debug('Guardando un perfil de un usuario autenticado');
         $data = $request->validate([
             'name' => 'required',
+            'ingredients' => 'nullable|array',
         ],
         [
             'name.required' => 'El nombre es obligatorio',
@@ -66,7 +67,7 @@ class ProfileController extends Controller
 
             $profile->ingredients()->attach($data['ingredients'] ?? []);
 
-             $profile;
+            return $profile;
         });
 
 
@@ -82,7 +83,7 @@ class ProfileController extends Controller
         Log::info('[]', ['key' => $request['ingredients[]']]);
         $profile = Profile::with('ingredients')->findOrFail($id);
 
-        DB::transaction(function () use ($profile) {  
+        DB::transaction(function () use ($profile, $request) {  
             $profile->ingredients()->sync($request['ingredients'] ?? []);
             $profile->save();
             return;

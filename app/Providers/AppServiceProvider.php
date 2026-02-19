@@ -26,8 +26,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapFive();
 
         ResetPassword::createUrlUsing(function (User $user, string $token) {
-            // TODO: Poner la URL de la SPA en el .env (y adaptar los otros lugares en las que la usamos...)
-            return 'http://localhost:5173/reset-password/' . $token . '/' . $user->email;
+            return config('app.spa_url') . '/reset-password/' . $token . '/' . $user->email;
         });
 
         /*Forzar HTTPS en producción

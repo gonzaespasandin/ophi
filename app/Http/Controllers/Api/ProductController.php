@@ -20,69 +20,69 @@ class ProductController extends Controller
         return response()->json(Product::all());
     }
 
-    public function find(int $id)
-    {
-        $product = Product::with(['ingredients', 'brand'])->find($id);
+    // public function find(int $id)
+    // {
+    //     $product = Product::with(['ingredients', 'brand'])->find($id);
 
-        if (!$product) {
-            return response()->isNotFound();
-        }
+    //     if (!$product) {
+    //         return response()->isNotFound();
+    //     }
 
-        return response()->json($product);
-    }
+    //     return response()->json($product);
+    // }
 
-    public function find_by_barcode(string $barcode) {
-        $product = Product::with(['ingredients', 'brand'])->where('barcode', $barcode)->limit(1)->first();
+    // public function find_by_barcode(string $barcode) {
+    //     $product = Product::with(['ingredients', 'brand'])->where('barcode', $barcode)->limit(1)->first();
 
-        if (!$product) {
-            return response()->isNotFound();
-        }
+    //     if (!$product) {
+    //         return response()->isNotFound();
+    //     }
 
-        return response()->json($product);
-    }
+    //     return response()->json($product);
+    // }
 
-    public function analyze_compatibility(int $id, int $user_id)
-    {
-        /* TODO: Authenticate
-         * Eventually this method should only be called by
-         * authenticated users (previously verified by the
-         * respective middleware). For now, I'll keep it simple
-         * */
+    // public function analyze_compatibility(int $id, int $user_id)
+    // {
+    //     /* TODO: Authenticate
+    //      * Eventually this method should only be called by
+    //      * authenticated users (previously verified by the
+    //      * respective middleware). For now, I'll keep it simple
+    //      * */
 
-        $profiles = Profile::with(['ingredients'])->where('user_id', $user_id)->get();
-        $product = Product::with(['ingredients'])->find($id);
+    //     $profiles = Profile::with(['ingredients'])->where('user_id', $user_id)->get();
+    //     $product = Product::with(['ingredients'])->find($id);
 
-        if (!$product) {
-            return response()->isNotFound();
-        }
+    //     if (!$product) {
+    //         return response()->isNotFound();
+    //     }
 
-        // TODO: Improve & optimize this code
-        foreach ($profiles as $profile) {
-            $profile->result = 'success';
+    //     // TODO: Improve & optimize this code
+    //     foreach ($profiles as $profile) {
+    //         $profile->result = 'success';
 
-            foreach ($profile->ingredients as $ingredient) {
+    //         foreach ($profile->ingredients as $ingredient) {
 
-                foreach ($product->ingredients as $ingredient_prod) {
+    //             foreach ($product->ingredients as $ingredient_prod) {
 
-                    if ($ingredient_prod->id == $ingredient->id) {
-                        $profile->result = 'danger';
-                        break;
-                    }
-                }
-            }
-        }
+    //                 if ($ingredient_prod->id == $ingredient->id) {
+    //                     $profile->result = 'danger';
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        return response()->json($profiles);
-    }
+    //     return response()->json($profiles);
+    // }
 
     public function find_by_name(string $name) {
         //---------- Chequeo de premium
         $user = User::with('subscription')
         ->find(Auth::id());
-        if(!$user->isPremium()) {
-            return view('subscription.index', [
-                'message' => 'Desbloqueá el premium para buscar productos!'
-            ]);
+       if(!$user->isPremium()) {
+            return response()->json([
+                'message' => 'Usuario no premium'
+            ], 403);
         }
         //----------
 
@@ -90,8 +90,10 @@ class ProductController extends Controller
         // Producto con relación ingredientes donde name = variable name
         $products = Product::with(['ingredients', 'brand'])->where('name', 'like', "$name%")->get();
 
-        if(!$products) {
-            return response('Not Found', 404)->header('Content-Type', 'text/plain');
+        if($products->isEmpty()) {
+            return response()->json([
+                'message' => 'Product not found'
+            ], 404);
         }
 
         return response()->json($products);
@@ -102,9 +104,9 @@ class ProductController extends Controller
         $user = User::with('subscription')
         ->find(Auth::id());
         if(!$user->isPremium()) {
-            return view('subscription.index', [
-                'message' => 'Desbloqueá el premium para buscar productos!'
-            ]);
+            return response()->json([
+                'message' => 'Usuario no premium'
+            ], 403);
         }
         //----------
 
@@ -118,7 +120,7 @@ class ProductController extends Controller
             })
             ->get();
 
-        if ($products->isEmpty()) {
+        if($products->isEmpty()) {
             return response()->json([
                 'message' => 'Product not found'
             ], 404);
@@ -138,18 +140,14 @@ class ProductController extends Controller
         $user = User::with('subscription')
         ->find(Auth::id());
         if(!$user->isPremium()) {
-            return view('subscription.index', [
-                'message' => 'Desbloqueá el premium para buscar productos!'
-            ]);
+            return response()->json([
+                'message' => 'Usuario no premium'
+            ], 403);
         }
         //----------
 
         $name = trim($name);
         $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "$name%")->limit(4)->get();
-
-        if(!$products) {
-            return response('Not Found', 404)->header('Content-Type', 'text/plain');
-        }
 
         return response()->json($products);
     }
@@ -164,6 +162,7 @@ class ProductController extends Controller
         $products = Product::with(['ingredients', 'brand'])->select('id', 'name', 'brand_id')->where('id', '>=', $randomId)->whereDoesntHave('ingredients', function (Builder $query) use ($ingredients) {
             $query->whereIn('name', $ingredients);
         })->limit(10)->get();
+
         return response()->json($products);
     }
 }

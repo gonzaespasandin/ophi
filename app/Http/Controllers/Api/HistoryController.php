@@ -13,43 +13,31 @@ use Illuminate\Support\Facades\DB;
 class HistoryController extends Controller
 {
     public function index() {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'No autenticado'], 401);
-        }
-
-        try {
-            // ---------- Chequeo de premuium 
-            $user = User::with(['subscription'])
-            ->find(Auth::id());
-            if(!$user->isPremium()) {
-                $history = History::with([
-                    'product', 'results.profile'
-                    ])
-                    ->where('user_id', Auth::user()->id)
-                    ->orderBy('scanned_at', 'desc')
-                    ->limit(10)
-                    ->get();
-                return response()->json($history);
-            }
-            // ---------- 
+        // ---------- Chequeo de premuium 
+        $user = User::with(['subscription'])
+        ->find(Auth::id());
+        if(!$user->isPremium()) {
             $history = History::with([
                 'product', 'results.profile'
                 ])
                 ->where('user_id', Auth::user()->id)
                 ->orderBy('scanned_at', 'desc')
-                ->paginate(10);
-
+                ->limit(10)
+                ->get();
             return response()->json($history);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al obtener el historial'], 500);
         }
+        // ---------- 
+        $history = History::with([
+            'product', 'results.profile'
+            ])
+            ->where('user_id', Auth::user()->id)
+            ->orderBy('scanned_at', 'desc')
+            ->paginate(10);
+
+        return response()->json($history);
     }
 
     public function store(Request $request) {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'No autenticado'], 401);
-        }
-
         $data = $request->validate([
             'product_id' => 'required|exists:products,id',
             'results' => 'required|array',
@@ -58,7 +46,7 @@ class HistoryController extends Controller
             'results.*.unsafe_ingredients' => 'nullable|array',
         ]);
 
-        try {
+
             DB::beginTransaction();
 
             $history = History::create([
@@ -84,10 +72,6 @@ class HistoryController extends Controller
                 'message' => 'Historial creado correctamente',
                 'data' => $history,
             ], 201);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'Error al crear el historial'], 500);
-        }
     }
 
     public function getLatestScans() {
@@ -114,7 +98,9 @@ class HistoryController extends Controller
         $user = User::with(['subscription'])
         ->find(Auth::id());
         if(!$user->isPremium()) {
-            return response()->json(['message' => 'Usuario no premium']);
+            return response()->json([
+                'message' => 'Usuario no premium'
+            ], 403);
         }
         $history = History::with([
                 'product', 'results.profile'

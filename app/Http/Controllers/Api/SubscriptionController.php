@@ -7,6 +7,7 @@ use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class SubscriptionController extends Controller
 {
@@ -14,4 +15,9 @@ class SubscriptionController extends Controller
         return Subscription::with('plan')->where('user_id', Auth::id())->first();
     }
 
+    public function subscribeEmailFromLanding(Request $request) {
+        Log::info('Subscribing email from landing: '. $request->input('email'));
+
+        return response()->noContent();
+    }
 }

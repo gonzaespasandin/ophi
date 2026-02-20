@@ -27,8 +27,8 @@
 
 /* Hover en opciones */
 .choices__item--choice.is-highlighted {
-    background-color: #222;
-    color: #fff;
+    background-color: #5a5a5a !important;
+    color: #fff !important;
 }
 
 /* Tags en selects múltiples */

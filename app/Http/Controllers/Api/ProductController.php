@@ -87,8 +87,8 @@ class ProductController extends Controller
         //----------
 
         $name = trim($name);
-        // Producto con relación ingredientes donde name = variable name
-        $products = Product::with(['ingredients', 'brand'])->where('name', 'like', "$name%")->get();
+        // Paginate = 5 is temporary. When we have more products, it will be 10. 
+        $products = Product::with(['ingredients', 'brand'])->where('name', 'like', "%$name%")->paginate(5);
 
         if($products->isEmpty()) {
             return response()->json([
@@ -147,7 +147,7 @@ class ProductController extends Controller
         //----------
 
         $name = trim($name);
-        $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "$name%")->limit(4)->get();
+        $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "%$name%")->limit(4)->get();
 
         return response()->json($products);
     }

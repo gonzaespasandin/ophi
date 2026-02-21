@@ -77,7 +77,7 @@ Route::middleware(['auth:sanctum'])
 /** SUBSCRIPTION */
 
 Route::get('/subscription', [SubscriptionController::class, 'getSubscription'])
-    ->middleware('auth');
+    ->middleware('auth:sanctum');
 
 
 

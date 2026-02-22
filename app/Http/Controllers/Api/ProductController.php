@@ -75,7 +75,7 @@ class ProductController extends Controller
     //     return response()->json($profiles);
     // }
 
-    public function find_by_name(Request $request, string $name) {
+    public function search(Request $request) {
         //---------- Chequeo de premium
         $user = User::with('subscription')
         ->find(Auth::id());
@@ -88,33 +88,36 @@ class ProductController extends Controller
 
         $queries = $request->query();
         unset($queries['page']);
-        if (!$queries) {
-            $name = trim($name);
-            // Paginate = 5 is temporary. When we have more products, it will be 10. 
-            $products = Product::with(['ingredients', 'brand'])->where('name', 'like', "%$name%")->paginate(5);
-        } else {
-            $query = Product::with(['ingredients', 'brand'])->where('name', 'like', "%$name%");
-            if($request->query('brands')) {
-                $brands = explode(',', $queries['brands']);
-                $query->whereIn('brand_id', $brands);
-            }
-            if($request->query('categories')) {
-                $categories = explode(',', $queries['categories']);
-                $query->whereIn('category_id', $categories);
-            }
-            if($request->query('origins')) {
-                $origins = explode(',', $queries['origins']);
-                $query->whereIn('origin', $origins);
-            }
-            $products = $query->paginate(1);
-            return response()->json($products);
+       
+    
+        $query = Product::with(['ingredients', 'brand']);
+
+
+        if ($request->query('q')) {
+            $name = trim($request->query('q'));
+
+            $query->where(function ($q) use ($name) {
+                $q->where('name', 'like', "%{$name}%")
+                ->orWhereHas('brand', function ($subQuery) use ($name) {
+                    $subQuery->where('name', 'like', "%{$name}%");
+                });
+            });
         }
 
-        if($products->isEmpty()) {
-            return response()->json([
-                'message' => 'Product not found'
-            ], 404);
+        if($request->query('brands')) {
+            $brands = explode(',', $queries['brands']);
+            $query->whereIn('brand_id', $brands);
         }
+        if($request->query('categories')) {
+            $categories = explode(',', $queries['categories']);
+            $query->whereIn('category_id', $categories);
+        }
+        if($request->query('origins')) {
+            $origins = explode(',', $queries['origins']);
+            $query->whereIn('origin', $origins);
+        }
+        $products = $query->paginate(4);
+
 
         return response()->json($products);
     }
@@ -167,7 +170,10 @@ class ProductController extends Controller
         //----------
 
         $name = trim($name);
-        $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "%$name%")->limit(4)->get();
+        // IMPORTANT: $name can be a name or a brand.
+        $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "%$name%")->orwhereHas('brand', function($query) use ($name) {
+                $query->where('name', 'like', "%$name%");
+            })->limit(4)->get();
 
         return response()->json($products);
     }

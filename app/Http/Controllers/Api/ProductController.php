@@ -75,7 +75,7 @@ class ProductController extends Controller
     //     return response()->json($profiles);
     // }
 
-    public function find_by_name(string $name) {
+    public function find_by_name(Request $request, string $name) {
         //---------- Chequeo de premium
         $user = User::with('subscription')
         ->find(Auth::id());
@@ -86,9 +86,29 @@ class ProductController extends Controller
         }
         //----------
 
-        $name = trim($name);
-        // Paginate = 5 is temporary. When we have more products, it will be 10. 
-        $products = Product::with(['ingredients', 'brand'])->where('name', 'like', "%$name%")->paginate(5);
+        $queries = $request->query();
+        unset($queries['page']);
+        if (!$queries) {
+            $name = trim($name);
+            // Paginate = 5 is temporary. When we have more products, it will be 10. 
+            $products = Product::with(['ingredients', 'brand'])->where('name', 'like', "%$name%")->paginate(5);
+        } else {
+            $query = Product::with(['ingredients', 'brand'])->where('name', 'like', "%$name%");
+            if($request->query('brands')) {
+                $brands = explode(',', $queries['brands']);
+                $query->whereIn('brand_id', $brands);
+            }
+            if($request->query('categories')) {
+                $categories = explode(',', $queries['categories']);
+                $query->whereIn('category_id', $categories);
+            }
+            if($request->query('origins')) {
+                $origins = explode(',', $queries['origins']);
+                $query->whereIn('origin', $origins);
+            }
+            $products = $query->paginate(1);
+            return response()->json($products);
+        }
 
         if($products->isEmpty()) {
             return response()->json([
@@ -164,5 +184,16 @@ class ProductController extends Controller
         })->limit(10)->get();
 
         return response()->json($products);
+    }
+
+    public function getOrigins() {
+        $origins = Product::select('origin as name')->get();
+        $clear = [];
+        foreach ($origins as $origin) {
+            if(!in_array($origin, $clear)) {
+                $clear[] = $origin;
+            }
+        }
+        return response()->json($clear);
     }
 }

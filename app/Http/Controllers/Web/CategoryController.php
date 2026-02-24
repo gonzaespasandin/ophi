@@ -9,15 +9,19 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    public function index() {
-        $categories = Category::all();
+    public function index()
+    {
+        $query = Category::query();
+
+        $categories = $query->paginate(10)->withQueryString();
 
         return view('categories.index', [
             'categories' => $categories
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'name' => 'required|unique:categories'
         ]);
@@ -29,14 +33,15 @@ class CategoryController extends Controller
         return to_route('admin.categories');
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $request->validate([
             'name' => 'required|unique:categories'
         ]);
 
         Log::info('[App\Http\Controllers\Web\CategoryController::class update()]');
-        Log::info('ID: '. $request->input('id'));
-        Log::info('Name: '. $request->input('name'));
+        Log::info('ID: ' . $request->input('id'));
+        Log::info('Name: ' . $request->input('name'));
 
         $category = Category::findOrFail($request->input('id'));
 
@@ -46,7 +51,8 @@ class CategoryController extends Controller
         return to_route('admin.categories');
     }
 
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         $category = Category::findOrFail($request->input('id'));
 
         $category->delete();

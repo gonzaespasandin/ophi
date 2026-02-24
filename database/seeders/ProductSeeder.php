@@ -1,5 +1,5 @@
 <?php
-
+// Hardcodeo para testeos <----------------
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;

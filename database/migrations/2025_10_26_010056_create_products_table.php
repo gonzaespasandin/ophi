@@ -18,10 +18,11 @@ return new class extends Migration
             $table->string('name_normalized')->default('');
             $table->string('img')->nullable();
             $table->string('img_alt')->nullable();
-            $table->string('origin');
+            $table->text('origin')->nullable();
 
-            $table->string('barcode', 15)->unique(); // 13 numbers per barcode
-            $table->string('rnpa', 10)->unique(); // 8 numbers per RNPA
+            // Barcodes y RNPA pueden faltar o venir rotos en datos reales
+            $table->string('barcode', 15)->nullable()->unique();
+            $table->string('rnpa', 32)->nullable()->unique();
 
             $table->foreignId('brand_id')->cascadeOnUpdate()->restrictOnDelete()->constrained();
             $table->foreignId('category_id')->cascadeOnUpdate()->restrictOnDelete()->constrained();

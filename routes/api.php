@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BrandController as ApiBrandController;
+use App\Http\Controllers\Api\CategoryController as ApiCategoryController;
 use App\Http\Controllers\Api\HistoryController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\NewsletterSubscriberController;
@@ -8,6 +10,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ScannerController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Web\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -46,11 +49,12 @@ Route::middleware(['auth:sanctum'])
         Route::get('/products/{id}/', [ProductController::class, 'find'])->whereNumber('id');
         Route::get('/products/barcode/{barcode}', [ProductController::class, 'find_by_barcode']);
 
-        Route::get('/products/name/{name}', [ProductController::class, 'find_by_name']);
+        Route::get('/products/search', [ProductController::class, 'search']);
         Route::get('/products/nameandbrand/{name}/{brand}', [ProductController::class, 'find_by_name_and_brand']);
         Route::get('/products/matchedname/{name}', [ProductController::class, 'find_match_by_name']);
+        Route::post('/products/recomended', [ProductController::class, 'getRecomendedProducts']);
     });
-Route::post('/products/recomended', [ProductController::class, 'getRecomendedProducts']);
+
 
 
 /** ESCANNER */
@@ -77,9 +81,16 @@ Route::middleware(['auth:sanctum'])
 /** SUBSCRIPTION */
 
 Route::get('/subscription', [SubscriptionController::class, 'getSubscription'])
-    ->middleware('auth');
+    ->middleware('auth:sanctum');
 
+/** FILTERS */
 
+Route::middleware(['auth:sanctum'])
+    ->group(function () {
+        Route::get('/brands', [ApiBrandController::class, 'getBrands']);
+        Route::get('/origins', [ProductController::class, 'getOrigins']);
+        Route::get('/categories', [ApiCategoryController::class, 'getCategories']);
+    });
 
 /** SUBSCRIPTION (LANDING PAGE) */
 Route::post('/subscribe-email', [NewsletterSubscriberController::class, 'subscribe']);

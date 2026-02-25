@@ -25,12 +25,13 @@ class KeyWordStrategy
     public function run(): bool
     {
         if (!$this->value) {
-            throw new \RuntimeException('No value provided. Use ->against($value)');
+            return false;
+            // throw new \RuntimeException('No value provided. Use ->against($value)');
         }
 
         foreach ($this->rules as $rule) {
             if ($this->evaluateRule($rule)) {
-                return true; // OR lógico entre reglas
+                return true;
             }
         }
 
@@ -67,10 +68,6 @@ class KeyWordStrategy
 
     protected function normalize(string $text): string
     {
-        $text = mb_strtolower($text, 'UTF-8');
-        $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
-        $text = preg_replace('/[^a-z0-9\s\-]/', '', $text);
-
         return trim($text);
     }
 }

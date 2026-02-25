@@ -13,17 +13,92 @@ class BelongsToHistamine implements ClassifierInterface {
     public static string $name = "Histamina";
 
     public static function classify(Ingredient $ingredient): bool {
-        // By Key Words
-        $keyWord = KeyWordStrategy::rules([
-            'pescado'
-        ])->against($ingredient->name);
-        if ($keyWord->run()) {
+        $name = $ingredient->name;
+
+        $exact = ExactMatchStrategy::words([
+            'histamina',
+            'vino',
+            'cerveza',
+            'sidra',
+            'champagne',
+            'cava',
+            'queso',
+            'roquefort',
+            'brie',
+            'camembert',
+            'parmesano',
+            'cheddar',
+            'salame',
+            'salami',
+            'jamon',
+            'mortadela',
+            'chorizo',
+            'longaniza',
+            'pepperoni',
+            'panceta',
+            'tocino',
+            'atun',
+            'sardina',
+            'caballa',
+            'anchoa',
+            'arenque',
+            'marisco',
+            'mejillon',
+            'almeja',
+            'ostra',
+            'langostino',
+            'camaron',
+            'gamba',
+            'tomate',
+            'berenjena',
+            'espinaca',
+            'palta',
+            'aguacate',
+            'chocolate',
+            'cacao',
+            'vinagre',
+            'soja',
+            'miso',
+            'tempeh',
+            'chucrut',
+            'kombucha'
+        ])->against($name);
+        if ($exact->run()) {
             return true;
         }
 
-        // By Exact Matches (example: word "sal" against "salsa" will be false
-        $exact = ExactMatchStrategy::words(['sal'])->against($ingredient->name);
-        if ($exact->run()) {
+        $keyword = KeyWordStrategy::rules([
+            'fermentad',
+            'curad',
+            'madurad',
+            'añejad',
+            'ahumad',
+            'embutid',
+            'fiambre',
+            'conserva',
+            'enlatad',
+            'marinad',
+            'escabech',
+            'vinag',
+            'extracto de levadura',
+            'levadura',
+            'salsa de soja',
+            'bebida alcohol',
+            'licor',
+            'cerveza',
+            'vino',
+            'marisco',
+            'pescado|!fresco',
+            'queso|!fresco',
+            'tomate',
+            'berenjena',
+            'espinaca',
+            'palta',
+            'aguacate',
+            'chocolate',
+            'cacao'
+        ])->against($name);
+        if ($keyword->run()) {
             return true;
         }
 

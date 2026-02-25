@@ -32,7 +32,8 @@ class ExactMatchStrategy
     public function run(): bool
     {
         if (empty($this->tokens)) {
-            throw new \RuntimeException('No value provided. Use ->against($value)');
+            return false;
+            // throw new \RuntimeException('No value provided. Use ->against($value)');
         }
 
         foreach ($this->words as $word) {
@@ -46,12 +47,6 @@ class ExactMatchStrategy
 
     protected function normalize(string $text): string
     {
-        $text = mb_strtolower($text, 'UTF-8');
-        $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
-
-        // Solo letras y números
-        $text = preg_replace('/[^a-z0-9\s]/', '', $text);
-
         return trim($text);
     }
 }

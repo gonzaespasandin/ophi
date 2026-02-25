@@ -13,14 +13,17 @@ class IngredientController extends Controller
     }
 
     public function intolerances() {
-        return response()->json(Ingredient::with('ingredients')->where('id', 1)->first()->ingredients);
+        $id = Ingredient::getRegisterFormIngredientIds()['Intolerancias'];
+        return response()->json(Ingredient::with('ingredients')->where('id', $id)->first()->ingredients);
     }
 
     public function allergies() {
-        return response()->json(Ingredient::with('ingredients.ingredients')->where('id', 2)->first()->ingredients);
+        $id = Ingredient::getRegisterFormIngredientIds()['Alergias'];
+        return response()->json(Ingredient::with('ingredients.ingredients')->where('id', $id)->first()->ingredients);
     }
 
     public function special_diets() {
-        return response()->json(Ingredient::with('ingredients')->where('id', 3)->first()->ingredients);
+        $id = Ingredient::getRegisterFormIngredientIds()['Dietas especiales'];
+        return response()->json(Ingredient::with('ingredients')->where('id', $id)->first()->ingredients);
     }
 }

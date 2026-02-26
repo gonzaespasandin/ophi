@@ -8,15 +8,19 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
-    public function index() {
-        $brands = Brand::all();
+    public function index()
+    {
+        $query = Brand::query();
+
+        $brands = $query->paginate(10)->withQueryString();
 
         return view('brands.index', [
             'brands' => $brands
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'name' => 'required|unique:brands'
         ]);
@@ -28,7 +32,8 @@ class BrandController extends Controller
         return to_route('admin.brands');
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $request->validate([
             'name' => 'required|unique:brands'
         ]);
@@ -41,7 +46,8 @@ class BrandController extends Controller
         return to_route('admin.brands');
     }
 
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         $brand = Brand::findOrFail($request->input('id'));
 
         $brand->delete();

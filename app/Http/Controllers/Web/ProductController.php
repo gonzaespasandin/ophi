@@ -11,7 +11,8 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $query = Product::with(['brand', 'category', 'ingredients']);
 
         if ($request->has('q')) {
@@ -26,7 +27,8 @@ class ProductController extends Controller
         ]);
     }
 
-    public function create() {
+    public function create()
+    {
         return view('products.create', [
             'categories' => Category::all(),
             'brands' => Brand::all(),
@@ -34,11 +36,12 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'name' => 'required|min:2',
-            'barcode' => 'required|size:13|unique:products,barcode',
-            'rnpa' => 'nullable|size:8',
+            'barcode' => 'nullable|size:13|unique:products,barcode',
+            'rnpa' => 'nullable|size:8|unique:products,rnpa',
             'brand' => 'required',
             'origin' => 'required',
             'category' => 'required',
@@ -57,7 +60,8 @@ class ProductController extends Controller
         return to_route('admin.products');
     }
 
-    public function edit(int $id) {
+    public function edit(int $id)
+    {
         return view('products.edit', [
             'product' => Product::findOrFail($id),
             'categories' => Category::all(),
@@ -66,11 +70,12 @@ class ProductController extends Controller
         ]);
     }
 
-    public function update(Request $request, int $id) {
+    public function update(Request $request, int $id)
+    {
         $request->validate([
             'name' => 'required|min:2',
-            'barcode' => 'required|size:13',
-            'rnpa' => 'nullable|size:8',
+            'barcode' => 'nullable|size:13|unique:products,barcode,' . $id,
+            'rnpa' => 'nullable|size:8|unique:products,rnpa,' . $id,
             'brand' => 'required',
             'origin' => 'required',
             'category' => 'required',
@@ -89,7 +94,8 @@ class ProductController extends Controller
         return to_route('admin.products');
     }
 
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         $product = Product::findOrFail($request->input('id'));
 
         $product->ingredients()->detach();

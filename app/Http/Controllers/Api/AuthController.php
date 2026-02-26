@@ -22,19 +22,25 @@ class AuthController extends Controller
     {
         $status = AuthService::login($request);
 
+        Log::info('Login ......................................................');
+        Log::info('Status: ' . $status);
+        
         if ($status === 401) {
+            Log::info('Las credenciales no coinciden');
             return response()->json([
                 'message' => 'Las credenciales no coinciden con nuestros registros'
             ], $status);
         }
-
+        
         if ($status === 200) {
+            Log::info('Puede iniciar sesión :)');
             return response()->json([
                 'message' => 'Inicio de sesión exitoso',
                 'user' => auth()->user()
             ], $status);
         }
-
+        
+        Log::info('Algo salió mal :(');
         return response()->json([
             'message' => 'Error no controlado',
             'status' => $status

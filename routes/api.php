@@ -92,6 +92,7 @@ Route::get('/subscription', [SubscriptionController::class, 'getSubscription'])
 Route::middleware(['auth:sanctum'])
     ->group(function () {
         Route::get('/brands', [ApiBrandController::class, 'getBrands']);
+        Route::get('/brands/{name}', [ApiBrandController::class, 'getBrandsByName']);
         Route::get('/origins', [ProductController::class, 'getOrigins']);
         Route::get('/categories', [ApiCategoryController::class, 'getCategories']);
     });

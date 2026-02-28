@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             IngredientHasIngredientSeeder::class,
             PlanSeeder::class,
             UserPlanSeeder::class,
-            BarcodeSuggestionSeeder::class,
+            // BarcodeSuggestionSeeder::class,
         ]);
     }
 }

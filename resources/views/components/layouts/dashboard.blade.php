@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="{{ url('/favicon.svg') }}" >
+    <link rel="icon" href="{{ url('/favicon.ico') }}" >
     <title>{{ $title ?? 'Panel de Administración' }} | ophi</title>
 
     {{-- STYLES --}}

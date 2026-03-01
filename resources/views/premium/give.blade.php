@@ -7,12 +7,12 @@
 <x-layouts.dashboard>
     <x-slot:title>Dar premium</x-slot:title>
 
-    <h1>¿A qué usuario te gustaría darle premium?</h1>
+    <h1>Otorgar premium</h1>
 
     <form action="{{ route('admin.premium.upgrade') }}" method="post">
         @csrf
         <div class="mb-3">
-            <label class="form-label" for="user">Usuario</label>
+            <label class="form-label" for="user">Seleccioná al usuario que le quieras dar premium</label>
             <select
                 id="user"
                 @class([
@@ -25,12 +25,11 @@
                 aria-errormessage="user-error"
                 @enderror
             >
-                <option value="" hidden>Seleccione al usuario</option>
                 @foreach($users as $user)
                     <option
                         @selected($user['id'] == old('user', -1))
                         value="{{ $user['id'] }}"
-                    >{{ $user['name'] }}</option>
+                    >{{ $user['name'] }} - {{ $user['email'] }}</option>
                 @endforeach
                 {{-- <option value="new">Añadir nueva marca</option> --}}
             </select>

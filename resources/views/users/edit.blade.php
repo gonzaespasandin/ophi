@@ -8,7 +8,7 @@
             <label class="form-label" for="role">Rol de {{ $user->name }}</label>
             <select
                 id="role"
-                class="form-select",
+                class="form-select"
                 name="role"
             >
                 <option value="{{$user->role}}" hidden>{{$user->role}}</option>

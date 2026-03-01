@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -39,12 +40,19 @@ class UserController extends Controller
     }
 
     public function update(Request $request, int $id) {
-  
+        if (auth()->user()->id === $id) {
+            Session::flash('feedback.message', 'No podés modificar el rol de tu usuario actual');
+            Session::flash('feedback.type', 'danger');
+            return to_route('admin.users');
+        }
+
         $request->only('role');
 
         $user = User::findOrFail($id);
         $user->update(['role' => $request->input('role')]);
 
+        Session::flash('feedback.message', 'Rol actualizado correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.users');
     }
 }

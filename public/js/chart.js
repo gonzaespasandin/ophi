@@ -12,52 +12,54 @@ if (ctx) {
             type: 'line',
             data: {
                 labels: result.labels,
-                datasets: [{
-                    label: 'Usuarios registrados',
-                    data: result.data,
-                    borderWidth: 2,
-                    tension: 0.3,
-                       // LÍNEA
-            borderColor: '#3b82f6',        // azul
-            borderWidth: 2,
+                datasets: [
+                    {
+                        label: 'Usuarios registrados',
+                        data: result.data,
+                        // LÍNEA
+                        borderColor: '#3b82f6', // azul
+                        borderWidth: 2,
 
-            // PUNTOS
-            pointBackgroundColor: '#3b82f6',
-            pointBorderColor: '#3b82f6',
-            pointRadius: 4,
-            pointHoverRadius: 6,
+                        // PUNTOS
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#3b82f6',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
 
-            tension: 0.4
-                }]
+                        tension: 0.4
+                    }
+                ]
             },
             options: {
-        responsive: true,
-        scales: {
-            x: {
-                grid: {
-                    color: '#ffffff33'   // líneas blancas suaves
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: {
+                            color: '#ffffff33'   // líneas blancas suaves
+                        },
+                        ticks: {
+                            color: '#ffffff'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: '#ffffff33'
+                        },
+                        ticks: {
+                            color: '#ffffff'
+                        }
+                    }
                 },
-                ticks: {
-                    color: '#ffffff'
-                }
-            },
-            y: {
-                grid: {
-                    color: '#ffffff33'
-                },
-                ticks: {
-                    color: '#ffffff'
+                plugins: {
+                    legend: {
+                        onClick: null,
+                        labels: {
+                            color: '#ffffff'
+                        }
+                    }
                 }
             }
-        },
-        plugins: {
-            legend: {
-                labels: {
-                    color: '#ffffff'
-                }
-            }
-        }
-    }
         });
     });
 }

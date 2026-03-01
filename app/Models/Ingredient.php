@@ -27,6 +27,10 @@ class Ingredient extends Model
         return $this->belongsToMany(Ingredient::class, 'ingredient_has_ingredients', 'owner_id', 'belongs_to_id');
     }
 
+    public function products() {
+        return $this->belongsToMany(Product::class);
+    }
+
     public function getAllSubgroups() {
         dd($this->ingredients);
     }
@@ -66,5 +70,9 @@ class Ingredient extends Model
         $ingredient->parents()->syncWithoutDetaching($parents);
 
         return $ingredient;
+    }
+
+    public static function normalize(string $name) {
+        return trim(strtolower($name));
     }
 }

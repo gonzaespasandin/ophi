@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
     <script defer src="{{ url('js/bootstrap.min.js') }}"></script>
 
     {{-- CHOICES (https://github.com/Choices-js/Choices) --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <link rel="stylesheet" href="{{ url('css/choices.css') }}">
     <link
     rel="stylesheet"
@@ -62,8 +62,22 @@
                         </div>
                     </nav>
                 </div>
-                <div class="col p-0">
+                <div class="col-12 col-md-10 p-0">
                     <main id="main" class=" container-fluid h-100 pt-2">
+                        @if (session()->has('feedback.message'))
+                            <div
+                                @class([
+                                    "alert",
+                                    "alert-warning" => session()->get('feedback.type') === "warning",
+                                    "alert-danger" => session()->get('feedback.type') === "danger",
+                                    "alert-success" => session()->get('feedback.type') === "success",
+                                    "alert-info" => session()->get('feedback.type') === "info",
+                                ])
+                            >
+                                {{ session()->get('feedback.message') }}
+                            </div>
+                        @endif
+
                         {{ $slot }}
                     </main>
                 </div>

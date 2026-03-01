@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class BrandController extends Controller
 {
@@ -29,6 +31,8 @@ class BrandController extends Controller
         $brand->name = $request->input('name');
         $brand->save();
 
+        Session::flash('feedback.message', 'Marca agregada correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.brands');
     }
 
@@ -43,6 +47,8 @@ class BrandController extends Controller
         $brand->name = $request->input('name');
         $brand->save();
 
+        Session::flash('feedback.message', 'Marca actualizada correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.brands');
     }
 
@@ -50,8 +56,22 @@ class BrandController extends Controller
     {
         $brand = Brand::findOrFail($request->input('id'));
 
-        $brand->delete();
+        try {
+            $brand->delete();
+        } catch (\Throwable $th) {
+            if ($th->getCode() == 23000) {
+                Session::flash('feedback.message', 'No se puede eliminar esta marca porque está siendo utlizada');
+                Session::flash('feedback.type', 'danger');
+                return to_route('admin.brands');
+            }
 
+            Session::flash('feedback.message', '¡Ups! Ocurrió un error desconocido, dicsulpá las molestias que esto pueda ocasionar');
+            Session::flash('feedback.type', 'danger');
+            return to_route('admin.brands');
+        }
+
+        Session::flash('feedback.message', 'Marca eliminada correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.brands');
     }
 }

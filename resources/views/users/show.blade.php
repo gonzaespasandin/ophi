@@ -23,9 +23,14 @@
 
         <div class="user-row">
             <span class="label">Plan</span>
-            <span class="value plan active">{{$user->subscription->plan}}</span>
+            <span class="value plan active">{{$user->subscription->plan->plan}}</span>
             <!-- alternativo -->
             <!-- <span class="value plan inactive">Sin suscripción</span> -->
+        </div>
+
+        <div class="user-row">
+            <span class="label">Se unió en</span>
+            <span class="value plan active">{{$user->created_at}}</span>
         </div>
     </div>
 </div>

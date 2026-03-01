@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class CategoryController extends Controller
 {
@@ -30,6 +31,8 @@ class CategoryController extends Controller
         $category->name = $request->input('name');
         $category->save();
 
+        Session::flash('feedback.message', 'Categoría creada correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.categories');
     }
 
@@ -48,6 +51,8 @@ class CategoryController extends Controller
         $category->name = $request->input('name');
         $category->save();
 
+        Session::flash('feedback.message', 'Categoría actualizada correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.categories');
     }
 
@@ -55,8 +60,22 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($request->input('id'));
 
-        $category->delete();
+        try {
+            $category->delete();
+        } catch (\Throwable $th) {
+            if ($th->getCode() == 23000) {
+                Session::flash('feedback.message', 'No se puede eliminar esta categoría porque está siendo utlizada por 1 o más productos');
+                Session::flash('feedback.type', 'danger');
+                return to_route('admin.categories');
+            }
 
+            Session::flash('feedback.message', '¡Ups! Ocurrió un error desconocido, dicsulpá las molestias que esto pueda ocasionar');
+            Session::flash('feedback.type', 'danger');
+            return to_route('admin.brands');
+        }
+
+        Session::flash('feedback.message', 'Categoría eliminada correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.categories');
     }
 }

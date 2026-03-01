@@ -31,6 +31,7 @@
     @if(!count($ingredients))
         <p>No se encontraron ingredientes</p>
     @else
+        <h2 class="visually-hidden">Listado completo</h2>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>

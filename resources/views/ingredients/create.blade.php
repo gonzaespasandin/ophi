@@ -39,7 +39,6 @@
                     "form-control",
                     "is-invalid" => $errors->has('aliases')
                 ])
-                type="text"
                 name="aliases"
                 placeholder="Separados por coma"
                 @error('aliases')
@@ -53,7 +52,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label" id="ingredients-label" for="ingredient-children">Este ingrediente es padre de...</label>
+            <label class="form-label" for="ingredient-children">Este ingrediente es padre de...</label>
             <select
                 multiple
                 id="ingredient-children"
@@ -69,10 +68,12 @@
             >
                 <option value="" hidden>Seleccione los ingredientes</option>
                 @foreach($ingredients as $ingredient)
-                    <option
-                        value="{{ $ingredient['id'] }}"
-                        @selected(in_array($ingredient['id'], old('ingredient-children', [])))
-                    >{{ $ingredient['name'] }}</option>
+                    @if(trim($ingredient['name']))
+                        <option
+                            value="{{ $ingredient['id'] }}"
+                            @selected(in_array($ingredient['id'], old('ingredient-children', [])))
+                        >{{ $ingredient['name'] }}</option>
+                    @endif
                 @endforeach
                 {{-- <option value="new">Añadir nueva categoría</option> --}}
             </select>
@@ -82,7 +83,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label" id="ingredients-label" for="ingredient-parent">Este ingrediente es hijo de...</label>
+            <label class="form-label" for="ingredient-parent">Este ingrediente es hijo de...</label>
             <select
                 multiple
                 id="ingredient-parent"
@@ -98,10 +99,12 @@
             >
                 <option value="" hidden>Seleccione los ingredientes</option>
                 @foreach($ingredients as $ingredient)
-                    <option
-                        value="{{ $ingredient['id'] }}"
-                        @selected(in_array($ingredient['id'], old('ingredient-parent', [])))
-                    >{{ $ingredient['name'] }}</option>
+                    @if(trim($ingredient['name']))
+                        <option
+                            value="{{ $ingredient['id'] }}"
+                            @selected(in_array($ingredient['id'], old('ingredient-parent', [])))
+                        >{{ $ingredient['name'] }}</option>
+                    @endif
                 @endforeach
                 {{-- <option value="new">Añadir nueva categoría</option> --}}
             </select>

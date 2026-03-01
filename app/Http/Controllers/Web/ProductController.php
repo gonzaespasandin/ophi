@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Classifier\IngredientClassifier;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Ingredient;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class ProductController extends Controller
 {
@@ -40,8 +43,8 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|min:2',
-            'barcode' => 'nullable|size:13|unique:products,barcode',
-            'rnpa' => 'nullable|size:8|unique:products,rnpa',
+            'barcode' => 'nullable|unique:products,barcode',
+            'rnpa' => 'nullable|unique:products,rnpa',
             'brand' => 'required',
             'origin' => 'required',
             'category' => 'required',
@@ -55,8 +58,11 @@ class ProductController extends Controller
         $product = new Product($data);
         $product->save();
 
-        $product->ingredients()->attach($request->get('ingredients'));
+        $ids = $this->getIngredientIdsFromNames($request->get('ingredients'));
+        $product->ingredients()->attach($ids['total']);
 
+        Session::flash('feedback.message', 'Producto agregado correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.products');
     }
 
@@ -74,8 +80,8 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|min:2',
-            'barcode' => 'nullable|size:13|unique:products,barcode,' . $id,
-            'rnpa' => 'nullable|size:8|unique:products,rnpa,' . $id,
+            'barcode' => 'nullable|unique:products,barcode,' . $id,
+            'rnpa' => 'nullable|unique:products,rnpa,' . $id,
             'brand' => 'required',
             'origin' => 'required',
             'category' => 'required',
@@ -89,8 +95,11 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->update($data);
 
-        $product->ingredients()->sync($request->input('ingredients', []));
+        $ids = $this->getIngredientIdsFromNames($request->get('ingredients'));
+        $product->ingredients()->sync($ids['total']);
 
+        Session::flash('feedback.message', 'Producto actualizado correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.products');
     }
 
@@ -101,6 +110,42 @@ class ProductController extends Controller
         $product->ingredients()->detach();
         $product->delete();
 
+        Session::flash('feedback.message', 'Producto eliminado correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.products');
+    }
+
+    /**
+     * @param string $names A string with the names separated by coma's. EJ: "Coco, melon, apple"
+     * @return array Array with the respectives IDs
+     */
+    public function getIngredientIdsFromNames(string $names) {
+        $result = [];
+        $newIngredients = [];
+        $names = explode(',', $names);
+        Log::info('Names: ', [$names]);
+
+        foreach ($names as $name) {
+            $name = Ingredient::normalize($name);
+            $ingredient = Ingredient::where('name', $name)->first();
+
+            if ($ingredient && !in_array($ingredient->id, $result)) {
+                $result[] = $ingredient->id;
+            } else {
+                $ingredient = new Ingredient();
+                $ingredient['name'] = $name;
+                $ingredient->save();
+
+                IngredientClassifier::runOne($ingredient);
+
+                $result[] = $ingredient->id;
+                $newIngredients[] = $ingredient->id;
+            }
+        }
+
+        return [
+            'total' => $result,
+            'new' => $newIngredients
+        ];
     }
 }

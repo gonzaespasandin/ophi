@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\PremiumService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class PremiumController extends Controller
 {
@@ -18,6 +19,8 @@ class PremiumController extends Controller
     public function cancel(User $user) {
         PremiumService::cancelUserPlan($user);
 
+        Session::flash('feedback.message', 'Plan cancelado correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.premium.index');
     }
 
@@ -31,6 +34,8 @@ class PremiumController extends Controller
         $user = User::with('subscription')->findOrFail($request->get('user'));
         PremiumService::upgradeUserPlan($user);
 
+        Session::flash('feedback.message', 'Plan otorgado correctamente');
+        Session::flash('feedback.type', 'success');
         return to_route('admin.premium.index');
     }
 }

@@ -113,12 +113,13 @@
             >
                 <option value="" hidden>Seleccione la marca que corresponda</option>
                 @foreach($brands as $brand)
-                    <option
-                        @selected($brand['id'] == old('brand', $product['brand_id']))
-                        value="{{ $brand['id'] }}"
-                    >{{ $brand['name'] }}</option>
+                    @if(trim($brand['name']))
+                        <option
+                            @selected($brand['id'] == old('brand', $product['brand_id']))
+                            value="{{ $brand['id'] }}"
+                        >{{ $brand['name'] }}</option>
+                    @endif
                 @endforeach
-                {{-- <option value="new">Añadir nueva marca</option> --}}
             </select>
             @error('brand')
             <p id="brand-error" class="small text-danger-emphasis mt-1">{{ $message }}</p>
@@ -140,12 +141,13 @@
             >
                 <option value="" hidden>Seleccione la categoría que corresponda</option>
                 @foreach($categories as $category)
-                    <option
-                        @selected($category['id'] == old('category', $product['category_id']))
-                        value="{{ $category['id'] }}"
-                    >{{ $category['name'] }}</option>
+                    @if(trim($category['name']))
+                        <option
+                            @selected($category['id'] == old('category', $product['category_id']))
+                            value="{{ $category['id'] }}"
+                        >{{ $category['name'] }}</option>
+                    @endif
                 @endforeach
-                {{-- <option value="new">Añadir nueva categoría</option> --}}
             </select>
             @error('category')
             <p id="category-error" class="small text-danger-emphasis mt-1">{{ $message }}</p>
@@ -153,28 +155,11 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="ingredients">Ingredientes</label>
-            <select
-                multiple
+            <textarea
+                class="form-control"
+                name="ingredients"
                 id="ingredients"
-                @class([
-                    "form-select",
-                    "is-invalid" => $errors->has('ingredients')
-                ])
-                name="ingredients[]"
-                @error('ingredients')
-                aria-invalid="true"
-                aria-errormessage="ingredients-error"
-                @enderror
-            >
-                <option value="" hidden>Seleccione los ingredientes</option>
-                @foreach($ingredients as $ingredient)
-                    <option
-                        value="{{ $ingredient['id'] }}"
-                        @selected(in_array($ingredient['id'], old('ingredients', $product->getIngredientIds())))
-                    >{{ $ingredient['name'] }}</option>
-                @endforeach
-                {{-- <option value="new">Añadir nueva categoría</option> --}}
-            </select>
+            >{{ join(', ', array_map(fn($i) => $i['name'], $product['ingredients']->toArray()))}}</textarea>
             @error('ingredients')
             <p id="ingredients-error" class="small text-danger-emphasis mt-1">{{ $message }}</p>
             @enderror
@@ -182,9 +167,4 @@
 
         <button class="btn btn-primary">Actualizar</button>
     </form>
-
-    <x-ingredient-modal />
-
-    <script defer src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <script defer src="{{ url('js/product-create-form.js') }}"></script>
 </x-layouts.dashboard>

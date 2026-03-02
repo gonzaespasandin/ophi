@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class BrandController extends Controller
 {
     public function getBrands() {
-       $brands = Brand::select('id', 'name')->limit(2)->get();
+       $brands = Brand::select('id', 'name')->limit(50)->get();
         return response()->json($brands);
     }
 

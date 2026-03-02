@@ -3,8 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,13 +14,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Redirección para web (admin)
         $middleware->redirectGuestsTo(function() {
             Session::flash('feedback.message', 'Tenés que iniciar sesión para proceder');
             Session::flash('feedback.type', 'warning');
 
             return route('login.show');
         });
-        $middleware->statefulApi();
+
+        // 👉 Esto es CLAVE para Sanctum + SPA
+        $middleware->appendToGroup('api', EnsureFrontendRequestsAreStateful::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

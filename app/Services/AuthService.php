@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AuthService
 {
@@ -12,11 +14,6 @@ class AuthService
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
-        ],
-        [
-            'email.required' => 'El email es obligatorio',
-            'email.email' => 'El email debe incluir una @',
-            'password.required' => 'La contraseña es obligatoria',
         ]);
 
         if (Auth::attempt($credentials)) {

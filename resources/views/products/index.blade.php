@@ -34,8 +34,10 @@
     @if(!count($products))
         <p>No se encontraron productos</p>
     @else
-        <table class="table table-striped table-responsive">
-            <thead>
+        <h2 class="visually-hidden">Listado de productos</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Marca</th>
@@ -46,8 +48,8 @@
                     <th>Ingredientes</th>
                     <th>Acciones</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 @foreach($products as $product)
                     <tr class="align-middle">
                         {{-- IMG - Ingredients --}}
@@ -77,8 +79,9 @@
                         </td>
                     </tr>
                 @endforeach
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     @endif
 
     {{ $products->links() }}

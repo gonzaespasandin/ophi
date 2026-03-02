@@ -18,11 +18,15 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 /** AUTHENTICATION */
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout']);
-Route::post('/forgot-password', [AuthController::class, 'forgot_password']);
-Route::post('/reset-password', [AuthController::class, 'reset_password']);
+Route::middleware('web')
+
+->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/forgot-password', [AuthController::class, 'forgot_password']);
+    Route::post('/reset-password', [AuthController::class, 'reset_password']);
+});
 
 
 
@@ -79,15 +83,20 @@ Route::middleware(['auth:sanctum'])
 
 
 /** SUBSCRIPTION */
+Route::middleware(['auth:sanctum'])
+    ->group(function () {
+        Route::get('/subscription', [SubscriptionController::class, 'getSubscription']);
+        Route::get('/givePremium', [SubscriptionController::class, 'givePremium']);
+        Route::get('/giveFree', [SubscriptionController::class, 'giveFree']);
 
-Route::get('/subscription', [SubscriptionController::class, 'getSubscription'])
-    ->middleware('auth:sanctum');
+    });
+
 
 /** FILTERS */
-
 Route::middleware(['auth:sanctum'])
     ->group(function () {
         Route::get('/brands', [ApiBrandController::class, 'getBrands']);
+        Route::get('/brands/{name}', [ApiBrandController::class, 'getBrandsByName']);
         Route::get('/origins', [ProductController::class, 'getOrigins']);
         Route::get('/categories', [ApiCategoryController::class, 'getCategories']);
     });

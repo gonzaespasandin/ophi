@@ -108,15 +108,15 @@ class ProductController extends Controller
             $brands = explode(',', $queries['brands']);
             $query->whereIn('brand_id', $brands);
         }
-        if($request->query('categories')) {
-            $categories = explode(',', $queries['categories']);
-            $query->whereIn('category_id', $categories);
-        }
-        if($request->query('origins')) {
-            $origins = explode(',', $queries['origins']);
-            $query->whereIn('origin', $origins);
-        }
-        $products = $query->paginate(4);
+        // if($request->query('categories')) {
+        //     $categories = explode(',', $queries['categories']);
+        //     $query->whereIn('category_id', $categories);
+        // }
+        // if($request->query('origins')) {
+        //     $origins = explode(',', $queries['origins']);
+        //     $query->whereIn('origin', $origins);
+        // }
+        $products = $query->paginate(10);
 
 
         return response()->json($products);

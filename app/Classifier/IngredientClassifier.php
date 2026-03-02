@@ -50,6 +50,11 @@ class IngredientClassifier {
         });
     }
 
+    public static function runOne($ingredient) {
+        $belongs_to_array = self::searchMatches($ingredient);
+        $ingredient->parents()->syncWithoutDetaching($belongs_to_array);
+    }
+
     public static function searchMatches(Ingredient $ingredient): array {
         $result = [];
         $idsDictionary = Ingredient::getRegisterFormIngredientIds();

@@ -8,7 +8,7 @@
 ?>
 
 <x-layouts.dashboard>
-    <h1>Editar nuevo ingrediente</h1>
+    <h1>Editar ingrediente</h1>
 
     <form action="{{ route('admin.ingredients.update', ['id' => $ingredient['id']]) }}" method="post">
         @method('patch')
@@ -43,7 +43,6 @@
                     "form-control",
                     "is-invalid" => $errors->has('aliases')
                 ])
-                type="text"
                 name="aliases"
                 placeholder="Separados por coma"
                 @error('aliases')
@@ -57,7 +56,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label" id="ingredients-label" for="ingredient-children">Este ingrediente es padre de...</label>
+            <label class="form-label" for="ingredient-children">Este ingrediente es padre de...</label>
             <select
                 multiple
                 id="ingredient-children"
@@ -73,10 +72,12 @@
             >
                 <option value="" hidden>Seleccione los ingredientes</option>
                 @foreach($ingredients as $ingredient)
-                    <option
-                        value="{{ $ingredient['id'] }}"
-                        @selected(in_array($ingredient['id'], old('ingredient-children', $childrenIds)))
-                    >{{ $ingredient['name'] }}</option>
+                    @if(trim($ingredient['name']))
+                        <option
+                            value="{{ $ingredient['id'] }}"
+                            @selected(in_array($ingredient['id'], old('ingredient-children', $childrenIds)))
+                        >{{ $ingredient['name'] }}</option>
+                    @endif
                 @endforeach
             </select>
             @error('ingredient-children')
@@ -85,7 +86,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label" id="ingredients-label" for="ingredient-parent">Este ingrediente es hijo de...</label>
+            <label class="form-label" for="ingredient-parent">Este ingrediente es hijo de...</label>
             <select
                 multiple
                 id="ingredient-parent"
@@ -101,10 +102,12 @@
             >
                 <option value="" hidden>Seleccione los ingredientes</option>
                 @foreach($ingredients as $ingredient)
-                    <option
-                        value="{{ $ingredient['id'] }}"
-                        @selected(in_array($ingredient['id'], old('ingredient-children', $parentIds)))
-                    >{{ $ingredient['name'] }}</option>
+                    @if(trim($ingredient['name']))
+                        <option
+                            value="{{ $ingredient['id'] }}"
+                            @selected(in_array($ingredient['id'], old('ingredient-children', $parentIds)))
+                        >{{ $ingredient['name'] }}</option>
+                    @endif
                 @endforeach
             </select>
             @error('ingredient-parent')
@@ -112,7 +115,7 @@
             @enderror
         </div>
 
-        <button class="btn btn-primary">Añadir</button>
+        <button class="btn btn-primary">Actualizar</button>
     </form>
 
     <script defer src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>

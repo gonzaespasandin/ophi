@@ -37,41 +37,44 @@
     @if(!count($categories))
     <p>No se encontraron categorías</p>
     @else
-    <table class="table table-striped table-responsive">
-        <thead>
+    <h2 class="visually-hidden">Listado completo</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
             <tr>
                 <th>#</th>
                 <th>Categoría</th>
                 <th>Acciones</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             @foreach($categories as $category)
-            <tr class="align-middle">
-                <td>{{ $category['id'] }}</td>
-                <td>{{ $category['name'] }}</td>
-                <td>
-                    <div class="d-flex gap-2 align-items-center">
-                        <button
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal-edit-inline"
-                            data-name="{{ $category['name'] }}"
-                            data-id="{{ $category['id'] }}"
-                            title="Editar categoría"><x-icons.edit /></button>
-                        <button
-                            class="btn btn-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modal-confirm-delete"
-                            data-name="{{ $category['name'] }}"
-                            data-id="{{ $category['id'] }}"
-                            title="Eliminar categoría"><x-icons.trash /></button>
-                    </div>
-                </td>
-            </tr>
+                <tr class="align-middle">
+                    <td>{{ $category['id'] }}</td>
+                    <td>{{ $category['name'] }}</td>
+                    <td>
+                        <div class="d-flex gap-2 align-items-center">
+                            <button
+                                class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-edit-inline"
+                                data-name="{{ $category['name'] }}"
+                                data-id="{{ $category['id'] }}"
+                                title="Editar categoría"><x-icons.edit /></button>
+                            <button
+                                class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-confirm-delete"
+                                data-name="{{ $category['name'] }}"
+                                data-id="{{ $category['id'] }}"
+                                title="Eliminar categoría"><x-icons.trash /></button>
+                        </div>
+                    </td>
+                </tr>
             @endforeach
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
     @endif
 
     {{ $categories->links() }}

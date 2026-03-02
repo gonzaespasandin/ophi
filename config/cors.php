@@ -19,7 +19,8 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['https://ophi.arcxvi.stream',
+    'https://conoce-ophi.arcxvi.stream', 'http://localhost:5173'],
 
     'allowed_origins_patterns' => [],
 

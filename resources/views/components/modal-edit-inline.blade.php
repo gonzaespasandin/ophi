@@ -17,7 +17,7 @@
             </div>
             <div class="modal-body">
                 <input id="modal-edit-inline-input-id" type="hidden" name="id">
-                <label for="modal-edit-inline-input">Nombre</label>
+                <label for="modal-edit-inline-input-name">Nombre</label>
                 <input
                     id="modal-edit-inline-input-name"
                     @class([

@@ -76,15 +76,15 @@ class ProductController extends Controller
     // }
 
     public function search(Request $request) {
-        //---------- Chequeo de premium
-        $user = User::with('subscription')
-        ->find(Auth::id());
-       if(!$user->isPremium()) {
-            return response()->json([
-                'message' => 'Usuario no premium'
-            ], 403);
-        }
-        //----------
+    //     //---------- Chequeo de premium
+    //     $user = User::with('subscription')
+    //     ->find(Auth::id());
+    //    if(!$user->isPremium()) {
+    //         return response()->json([
+    //             'message' => 'Usuario no premium'
+    //         ], 403);
+    //     }
+    //     //----------
 
         $queries = $request->query();
         unset($queries['page']);
@@ -116,22 +116,22 @@ class ProductController extends Controller
         //     $origins = explode(',', $queries['origins']);
         //     $query->whereIn('origin', $origins);
         // }
-        $products = $query->paginate(10);
+        $products = $query->paginate(7);
 
 
         return response()->json($products);
     }
 
     public function find_by_name_and_brand(string $name, string $brand) {
-        //---------- Chequeo de premium
-        $user = User::with('subscription')
-        ->find(Auth::id());
-        if(!$user->isPremium()) {
-            return response()->json([
-                'message' => 'Usuario no premium'
-            ], 403);
-        }
-        //----------
+        // //---------- Chequeo de premium
+        // $user = User::with('subscription')
+        // ->find(Auth::id());
+        // if(!$user->isPremium()) {
+        //     return response()->json([
+        //         'message' => 'Usuario no premium'
+        //     ], 403);
+        // }
+        // //----------
 
         $brand = trim($brand);
         $name = trim($name);
@@ -159,15 +159,15 @@ class ProductController extends Controller
     }
 
     public function find_match_by_name(string $name) {
-        //---------- Chequeo de premium
-        $user = User::with('subscription')
-        ->find(Auth::id());
-        if(!$user->isPremium()) {
-            return response()->json([
-                'message' => 'Usuario no premium'
-            ], 403);
-        }
-        //----------
+        // //---------- Chequeo de premium
+        // $user = User::with('subscription')
+        // ->find(Auth::id());
+        // if(!$user->isPremium()) {
+        //     return response()->json([
+        //         'message' => 'Usuario no premium'
+        //     ], 403);
+        // }
+        // //----------
 
         $name = trim($name);
         // IMPORTANT: $name can be a name or a brand.

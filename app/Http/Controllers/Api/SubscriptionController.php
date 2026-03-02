@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
+use App\Models\Profile;
 use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -47,14 +48,23 @@ class SubscriptionController extends Controller
         }
         $userId = Auth::id();
         if($userId) {
-            DB::transaction(function () use ($userId) {
+            DB::transaction(function () use ($userId, $user) {
                 $userPlan = Subscription::where('user_id', $userId)->firstOrFail();
                 $premiumPlan = Plan::findOrFail(1);
                 $userPlan->update([
                     'plan_id' => $premiumPlan->id,
                     'amount' => $premiumPlan->price,
                 ]);
+                $firstProfile = Profile::where('user_id', $userId)->first();
+
+                $profiles = $user->profiles()->where('id', '!=', $firstProfile->id)->get();
+                foreach ($profiles as $profile) {
+                    $profile->ingredients()->detach(); 
+                    $profile->delete();
+                }
+                $user->profiles()->where('id', '!=', $firstProfile->id)->delete();
             });
         }
+        
     }
 }

@@ -24,14 +24,14 @@ class AuthController extends Controller
 
         Log::info('Login ......................................................');
         Log::info('Status: ' . $status);
-        
+
         if ($status === 401) {
             Log::info('Las credenciales no coinciden');
             return response()->json([
                 'message' => 'Las credenciales no coinciden con nuestros registros'
             ], $status);
         }
-        
+
         if ($status === 200) {
             Log::info('Puede iniciar sesión :)');
             return response()->json([
@@ -39,7 +39,7 @@ class AuthController extends Controller
                 'user' => auth()->user()
             ], $status);
         }
-        
+
         Log::info('Algo salió mal :(');
         return response()->json([
             'message' => 'Error no controlado',
@@ -51,7 +51,7 @@ class AuthController extends Controller
         Log::debug('Registrando usuario...');
         $data = $request->validate([
             'terms_and_conditions' => 'required',
-            'name' => 'required|min:3|max:25|regex:/^[a-zA-ZÁÉÍÓÚÜáéíóúüÑñ\s-]+$/',
+            'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|max:74|regex:/^(?=.*[a-z])(?=.*[A-Z]).+$/',
             'confirm_password' => 'required|same:password',
@@ -59,9 +59,6 @@ class AuthController extends Controller
         [
             'terms_and_conditions.required' => 'Debes aceptar los términos y condiciones',
             'name.required' => 'El nombre es obligatorio',
-            'name.min' => 'El nombre debe tener mínimo 3 caracteres',
-            'name.max' => 'El nombre debe tener máximo 25 caracteres',
-            'name.regex' => 'El nombre debe contener únicamente letras',
             'email.required' => 'El email es obligatorio',
             'email.email' => 'El email debe ser válido',
             'email.unique' => 'Este email ya está registrado',
@@ -74,9 +71,14 @@ class AuthController extends Controller
         ]);
         Log::debug('Todo bien en la validación :d');
 
-        $user = DB::transaction(function () use ($data) {
+        $name = trim($request->input('name'));
+        if (strlen($name) > 24) {
+            $name = substr($name, 0, 24);
+        }
+
+        $user = DB::transaction(function () use ($data, $name) {
             $user = new User();
-            $user->name = trim($data['name']);
+            $user->name = $name;
             $user->email = trim($data['email']);
             $user->password = Hash::make($data['password']);
             $user->save();

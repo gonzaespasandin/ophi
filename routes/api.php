@@ -83,12 +83,16 @@ Route::middleware(['auth:sanctum'])
 
 
 /** SUBSCRIPTION */
+Route::middleware(['auth:sanctum'])
+    ->group(function () {
+        Route::get('/subscription', [SubscriptionController::class, 'getSubscription']);
+        Route::get('/givePremium', [SubscriptionController::class, 'givePremium']);
+        Route::get('/giveFree', [SubscriptionController::class, 'giveFree']);
 
-Route::get('/subscription', [SubscriptionController::class, 'getSubscription'])
-    ->middleware('auth:sanctum');
+    });
+
 
 /** FILTERS */
-
 Route::middleware(['auth:sanctum'])
     ->group(function () {
         Route::get('/brands', [ApiBrandController::class, 'getBrands']);

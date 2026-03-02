@@ -22,7 +22,7 @@ class BarcodeSuggestionSeeder extends Seeder
         ]);
 
         $confirmations = [];
-        for ($i = 2; $i <= 10; $i++) {
+        for ($i = 3; $i <= 11; $i++) {
             $confirmations[] = [
                 'barcode_suggestion_id' => 1,
                 'user_id'               => $i,

@@ -95,7 +95,14 @@ class UserPlanSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-
+            [
+                'user_id'    => 11,
+                'plan_id'       => 1,
+                'amount'     => 0,
+                'expires_at' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

@@ -45,6 +45,9 @@ class ProfileController extends Controller
             ], 403);
         }
         //-------------
+
+        
+
         Log::debug('Guardando un perfil de un usuario autenticado');
         $data = $request->validate([
             'name' => 'required',
@@ -57,6 +60,14 @@ class ProfileController extends Controller
         Log::debug('La validación es correcta');
         Log::info('Datos del perfil:', ['data' => $data]);
 
+        // ¿Ya tiene algún perfil con ese nombre? ------
+        $repeatedName = Profile::where('user_id', Auth::id())->where('name', $data['name'])->exists();
+        if($repeatedName) {
+            return response()->json([
+                'errors' => 'Ya tenés un perfil con ese nombre'
+            ], 422);
+        }
+        // ------------------------------------------------
 
         $profile = DB::transaction(function () use ($data) {  
             $profile = new Profile();

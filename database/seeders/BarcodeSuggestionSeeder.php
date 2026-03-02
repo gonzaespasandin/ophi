@@ -13,8 +13,8 @@ class BarcodeSuggestionSeeder extends Seeder
         // Sugerencia: código 0123456789012 → Coca Cola 500ml (product_id: 9)
         DB::table('barcode_suggestions')->insert([
             'id'                   => 1,
-            'barcode'              => '0123456789012',
-            'product_id'           => 9,
+            'barcode'              => '7792390620700',
+            'product_id'           => 1886,
             'suggested_by_user_id' => 2,
             'status'               => 'pending',
             'created_at'           => now(),

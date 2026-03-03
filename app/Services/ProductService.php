@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class ProductService
 {
-    static public function getSafeProducts(int $brand_id = 0, int $category_id = 0, int $limit = 15, int $avoidProduct = 0): array | \Illuminate\Database\Eloquent\Collection
+    static public function getSafeProducts(int $brand_id = 0, int $category_id = 0, int $limit = 7, int $avoidProduct = 0): array | \Illuminate\Database\Eloquent\Collection
     {
         if(!Auth::check()) {
             return [];

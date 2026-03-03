@@ -88,8 +88,8 @@ class ProductController extends Controller
 
         $queries = $request->query();
         unset($queries['page']);
-       
-    
+
+
         $query = Product::with(['ingredients', 'brand']);
 
 
@@ -148,7 +148,7 @@ class ProductController extends Controller
                 'message' => 'Product not found'
             ], 404);
         }
-        
+
         $safeProducts = ProductService::getSafeProducts(
             category_id: $products[0]->category_id,
             avoidProduct: $products[0]->id
@@ -190,6 +190,12 @@ class ProductController extends Controller
         })->limit(10)->get();
 
         return response()->json($products);
+    }
+
+    public function getSafeProducts() {
+        $result = ProductService::getSafeProducts();
+
+        return response()->json($result);
     }
 
     public function getOrigins() {

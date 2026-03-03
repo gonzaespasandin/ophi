@@ -50,9 +50,9 @@ class AuthController extends Controller
     public function register(Request $request) {
         Log::debug('Registrando usuario...');
         $data = $request->validate([
-            'terms_and_conditions' => 'required',
-            'name' => 'required',
+            'terms_and_conditions' => 'required|accepted',
             'email' => 'required|email|unique:users,email',
+            'name' => 'required',
             'password' => 'required|min:8|max:74|regex:/^(?=.*[a-z])(?=.*[A-Z]).+$/',
             'confirm_password' => 'required|same:password',
         ],

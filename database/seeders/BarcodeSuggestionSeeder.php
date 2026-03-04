@@ -15,7 +15,7 @@ class BarcodeSuggestionSeeder extends Seeder
             'id'                   => 1,
             'barcode'              => '7792390620700',
             'product_id'           => 1886,
-            'suggested_by_user_id' => 2,
+            'suggested_by_user_id' => 3,
             'status'               => 'pending',
             'created_at'           => now(),
             'updated_at'           => now(),

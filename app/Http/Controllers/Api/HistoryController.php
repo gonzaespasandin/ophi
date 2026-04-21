@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\History;
 use App\Models\HistoryResult;
 use App\Models\User;
+use App\Services\HistoryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,26 +14,7 @@ use Illuminate\Support\Facades\DB;
 class HistoryController extends Controller
 {
     public function index() {
-        // ---------- Chequeo de premuium 
-        $user = User::with(['subscription'])
-        ->find(Auth::id());
-        if(!$user->isPremium()) {
-            $history = History::with([
-                'product', 'results.profile'
-                ])
-                ->where('user_id', Auth::user()->id)
-                ->orderBy('scanned_at', 'desc')
-                ->limit(10)
-                ->get();
-            return response()->json($history);
-        }
-        // ---------- 
-        $history = History::with([
-            'product', 'results.profile'
-            ])
-            ->where('user_id', Auth::user()->id)
-            ->orderBy('scanned_at', 'desc')
-            ->paginate(10);
+       $history = HistoryService::index();
 
         return response()->json($history);
     }
@@ -47,42 +29,17 @@ class HistoryController extends Controller
         ]);
 
 
-            DB::beginTransaction();
+        $history = HistoryService::store($data);
 
-            $history = History::create([
-                'user_id' => Auth::user()->id,
-                'product_id' => $data['product_id'],
-                'scanned_at' => now(),
-            ]);
-
-            foreach ($data['results'] as $result) {
-                HistoryResult::create([
-                    'history_id' => $history->id,
-                    'profile_id' => $result['profile_id'],
-                    'is_safe' => $result['is_safe'],
-                    'unsafe_ingredients' => $result['unsafe_ingredients'] ?? [],
-                ]);
-            }
-
-            DB::commit();
-
-            $history->load(['product', 'results.profile']);
-
-            return response()->json([
-                'message' => 'Historial creado correctamente',
-                'data' => $history,
-            ], 201);
+        return response()->json([
+            'message' => 'Historial creado correctamente',
+            'data' => $history,
+        ], 201);
     }
 
     public function getLatestScans() {
-        $history = History::with([
-                'product', 'results.profile'
-                ])
-                ->where('user_id', Auth::user()->id)
-                ->orderBy('scanned_at', 'desc')
-                ->limit(3) 
-                ->get();
-
+        $history = HistoryService::getLatestScans();
+        
         return response()->json($history);
     }
 
@@ -95,22 +52,7 @@ class HistoryController extends Controller
     }
 
     public function searchByName(string $name) {
-        $user = User::with(['subscription'])
-        ->find(Auth::id());
-        if(!$user->isPremium()) {
-            return response()->json([
-                'message' => 'Usuario no premium'
-            ], 403);
-        }
-        $history = History::with([
-                'product', 'results.profile'
-                ])
-                ->where('user_id', Auth::user()->id)
-                 ->whereHas('product', function ($query) use ($name) {
-                    $query->where('name', 'like', "%$name%");
-                })
-                ->limit(10)
-                ->get();
+        $history = HistoryService::searchByName($name);
         
         return response()->json($history);
     }

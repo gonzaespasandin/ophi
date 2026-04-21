@@ -20,35 +20,32 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $status = AuthService::login($request);
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-        Log::info('Login ......................................................');
-        Log::info('Status: ' . $status);
+        try {
+            $user = AuthService::login($credentials);
 
-        if ($status === 401) {
-            Log::info('Las credenciales no coinciden');
-            return response()->json([
-                'message' => 'Las credenciales no coinciden con nuestros registros'
-            ], $status);
-        }
+            $request->session()->regenerate();
 
-        if ($status === 200) {
-            Log::info('Puede iniciar sesión :)');
             return response()->json([
                 'message' => 'Inicio de sesión exitoso',
-                'user' => auth()->user()
-            ], $status);
-        }
+                'user' => $user
+            ]);
 
-        Log::info('Algo salió mal :(');
-        return response()->json([
-            'message' => 'Error no controlado',
-            'status' => $status
-        ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 401);
+        }
     }
+
 
     public function register(Request $request) {
         Log::debug('Registrando usuario...');
+
         $data = $request->validate([
             'terms_and_conditions' => 'required|accepted',
             'email' => 'required|email|unique:users,email',
@@ -69,29 +66,13 @@ class AuthController extends Controller
             'confirm_password.required' => 'La confirmación de contraseña es obligatoria',
             'confirm_password.same' => 'Las contraseñas no coinciden',
         ]);
-        Log::debug('Todo bien en la validación :d');
 
         $name = trim($request->input('name'));
         if (strlen($name) > 24) {
             $name = substr($name, 0, 24);
         }
 
-        $user = DB::transaction(function () use ($data, $name) {
-            $user = new User();
-            $user->name = $name;
-            $user->email = trim($data['email']);
-            $user->password = Hash::make($data['password']);
-            $user->save();
-            Subscription::create([
-                'user_id' => $user->id,
-                'plan_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-
-            return $user;
-        });
-        Log::info('Usuario registrado', ['user' => $user]);
+        $user = AuthService::register($data, $name);
 
         return response()->json([
             'message' => 'Usuario registrado exitosamente',

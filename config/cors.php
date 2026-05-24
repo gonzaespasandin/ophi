@@ -21,11 +21,8 @@ return [
         'https://ophi.arcxvi.stream',
         'https://conoce-ophi.arcxvi.stream',
         'http://localhost:5173',
-        'http://localhost:4321'
+        'http://localhost:4321',
     ],
-
-    'allowed_origins' => ['https://ophi.arcxvi.stream',
-    'https://conoce-ophi.arcxvi.stream', 'http://localhost:5173'],
 
     'allowed_origins_patterns' => [],
 

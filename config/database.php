@@ -43,6 +43,16 @@ return [
             'transaction_mode' => 'DEFERRED',
         ],
 
+        'catalog' => [
+            'driver' => 'sqlite',
+            'database' => env('CATALOG_DB_PATH', database_path('EAN_VALIDOS.db')),
+            'prefix' => '',
+            'foreign_key_constraints' => false,
+            'busy_timeout' => null,
+            'journal_mode' => null,
+            'synchronous' => null,
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),

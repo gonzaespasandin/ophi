@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController as ApiBrandController;
+use App\Http\Controllers\Api\CatalogController;
 use App\Http\Controllers\Api\CategoryController as ApiCategoryController;
 use App\Http\Controllers\Api\HistoryController;
 use App\Http\Controllers\Api\IngredientController;
@@ -10,7 +11,9 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ScannerController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Api\Admin\AdminCatalogController;
 use App\Http\Controllers\Web\CategoryController;
+use App\Http\Middleware\EnsureIsAdmin;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -103,3 +106,26 @@ Route::middleware(['auth:sanctum'])
 
 /** SUBSCRIPTION (LANDING PAGE) */
 Route::post('/subscribe-email', [NewsletterSubscriberController::class, 'subscribe']);
+
+
+
+/** CATÁLOGO EXTERNO (EAN_VALIDOS.db) */
+Route::middleware(['auth:sanctum'])
+    ->group(function () {
+        Route::get('/catalog/{ean}', [CatalogController::class, 'findByEan'])
+            ->where('ean', '[0-9]+');
+    });
+
+
+
+/** ADMIN — OCR de ingredientes sobre el catálogo */
+Route::middleware(['auth:sanctum', EnsureIsAdmin::class])
+    ->prefix('admin')
+    ->group(function () {
+        Route::get('/catalog/{ean}', [AdminCatalogController::class, 'lookup'])
+            ->where('ean', '[0-9]+');
+        Route::post('/catalog/{ean}/extract-ingredients', [AdminCatalogController::class, 'extractIngredients'])
+            ->where('ean', '[0-9]+');
+        Route::put('/catalog/{ean}/ingredients', [AdminCatalogController::class, 'saveIngredients'])
+            ->where('ean', '[0-9]+');
+    });

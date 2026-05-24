@@ -18,6 +18,10 @@ class EnsureIsAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->user()->role !== 'admin') {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Solo administradores'], 403);
+            }
+
             Session::flash('feedback.message', 'Tenés que ser administrador para acceder');
             Session::flash('feedback.type', 'warning');
 

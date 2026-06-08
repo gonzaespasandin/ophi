@@ -55,6 +55,17 @@ class AdminCatalogController extends Controller
     }
 
     /**
+     * Devuelve productos del catálogo con el mismo nombre base pero distinto tamaño.
+     * Permite al admin aplicar los mismos ingredientes a varias presentaciones del mismo producto.
+     */
+    public function similar(string $ean)
+    {
+        $similar = $this->catalogService->findSimilar($ean);
+
+        return response()->json(['similar' => $similar]);
+    }
+
+    /**
      * Guarda la lista de ingredientes (ya revisada/editada por el admin) en el catálogo.
      */
     public function saveIngredients(string $ean, Request $request)

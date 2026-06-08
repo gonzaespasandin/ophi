@@ -95,10 +95,15 @@ class OcrService
             $nombre = trim($item['nombre'] ?? '');
             $ins    = strtolower(trim($item['ins'] ?? ''));
 
-            if ($nombre !== '') {
+            if ($nombre !== '' && $ins !== '') {
+                // Tiene nombre e INS: conservar ambos para mostrar "nombre (INS código)"
+                $result[] = "{$nombre} (INS {$ins})";
+            } elseif ($nombre !== '') {
                 $result[] = $nombre;
             } elseif ($ins !== '') {
-                $result[] = $lookup[$ins] ?? "ins {$ins}";
+                // Solo código: resolver contra la tabla; si no está, dejarlo como "ins NNN"
+                $insName  = $lookup[$ins] ?? null;
+                $result[] = $insName !== null ? "{$insName} (INS {$ins})" : "ins {$ins}";
             }
             // si ambos vacíos, lo ignoramos
         }

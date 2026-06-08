@@ -124,6 +124,8 @@ Route::middleware(['auth:sanctum', EnsureIsAdmin::class])
     ->group(function () {
         Route::get('/catalog/{ean}', [AdminCatalogController::class, 'lookup'])
             ->where('ean', '[0-9]+');
+        Route::get('/catalog/{ean}/similar', [AdminCatalogController::class, 'similar'])
+            ->where('ean', '[0-9]+');
         Route::post('/catalog/{ean}/extract-ingredients', [AdminCatalogController::class, 'extractIngredients'])
             ->where('ean', '[0-9]+');
         Route::put('/catalog/{ean}/ingredients', [AdminCatalogController::class, 'saveIngredients'])

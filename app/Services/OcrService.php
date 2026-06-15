@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Catalog\InsCode;
+use App\Exceptions\OcrConfigurationException;
+use App\Models\InsCode;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Collection;
 use OpenAI;
 use OpenAI\Contracts\ClientContract;
 use OpenAI\Laravel\Facades\OpenAI as OpenAIFacade;
@@ -20,12 +20,14 @@ class OcrService
      *  2. Post-procesamiento: los ingredientes sin nombre se resuelven contra la
      *     tabla ins_codes del catálogo. Si el código no está en la tabla, se guarda
      *     como "ins NNN" para poder revisarlo después.
-     *  3. Devuelve array de strings limpios listos para guardar en IMAGENES.ingredientes.
+     *  3. Devuelve array de strings limpios listos para guardar en Ophi.
      *
      * @return string[]
      */
     public function extractIngredientsFromImage(UploadedFile $image): array
     {
+        $this->ensureProviderIsConfigured();
+
         $base64   = base64_encode(file_get_contents($image->getRealPath()));
         $mimeType = $image->getMimeType();
 
@@ -167,5 +169,39 @@ PROMPT;
         return ! empty(config('openai.azure.endpoint'))
             && ! empty(config('openai.azure.deployment'))
             && ! empty(config('openai.azure.api_key'));
+    }
+
+    protected function ensureProviderIsConfigured(): void
+    {
+        $azureConfig = [
+            'AZURE_OPENAI_ENDPOINT'   => config('openai.azure.endpoint'),
+            'AZURE_OPENAI_DEPLOYMENT' => config('openai.azure.deployment'),
+            'AZURE_OPENAI_API_KEY'    => config('openai.azure.api_key'),
+        ];
+
+        $hasAnyAzureConfig = collect($azureConfig)->contains(
+            fn($value) => trim((string) $value) !== ''
+        );
+
+        if ($hasAnyAzureConfig) {
+            $missing = collect($azureConfig)
+                ->filter(fn($value) => trim((string) $value) === '')
+                ->keys()
+                ->implode(', ');
+
+            if ($missing !== '') {
+                throw new OcrConfigurationException(
+                    "OCR mal configurado: faltan {$missing}. Para Azure necesitás endpoint, deployment y api key."
+                );
+            }
+
+            return;
+        }
+
+        if (trim((string) config('openai.api_key')) === '') {
+            throw new OcrConfigurationException(
+                'OCR mal configurado: configurá OPENAI_API_KEY o configurá AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT y AZURE_OPENAI_API_KEY.'
+            );
+        }
     }
 }

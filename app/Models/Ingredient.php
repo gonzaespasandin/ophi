@@ -8,6 +8,18 @@ use Illuminate\Support\Facades\Log;
 
 class Ingredient extends Model
 {
+    protected $hidden = ['pivot', 'parents', 'products'];
+    protected $appends = ['parent_ids'];
+
+    public function getParentIdsAttribute(): array
+    {
+        if ($this->relationLoaded('parents')) {
+            return $this->parents->pluck('id')->unique()->values()->toArray();
+        }
+
+        return $this->getParentIds();
+    }
+
     public function getChildrenIds() {
         return $this->ingredients()->pluck('id')->toArray();
     }

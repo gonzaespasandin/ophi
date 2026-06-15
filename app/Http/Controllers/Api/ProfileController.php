@@ -70,7 +70,7 @@ class ProfileController extends Controller
         Log::info('Ingredientes', ['key' => $request->input('ingredients', [])]);
         Log::info('[]', ['key' => $request['ingredients[]']]);
 
-        $ingredients = $request->inout('ingredients');
+        $ingredients = $request->input('ingredients', []);
         $profile = ProfileService::update($id, $ingredients);
         
         return response()->json([

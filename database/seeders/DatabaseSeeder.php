@@ -20,18 +20,20 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
-            ImportProductsFromCsvSeeder::class,
+            IngredientSeeder::class,
+            InsCodesSeeder::class,
             UserSeeder::class,
-            // IngredientSeeder::class, (ahhora vienen del ImportProductsFromCsvSeeder)
-            // CategorySeeder::class, (ahhora vienen del ImportProductsFromCsvSeeder)
-            // BrandSeeder::class, (ahhora vienen del ImportProductsFromCsvSeeder)
-            // ProductSeeder::class, (ahhora vienen del ImportProductsFromCsvSeeder)
             ProfileSeeder::class,
-            // IngredientProductSeeder::class,  (ahhora vienen del ImportProductsFromCsvSeeder)
             IngredientProfileSeeder::class,
             IngredientHasIngredientSeeder::class,
             PlanSeeder::class,
             UserPlanSeeder::class,
+            // Product/catalog data comes from products:import-normalized-json in production.
+            // ImportProductsFromCsvSeeder::class,
+            // CategorySeeder::class,
+            // BrandSeeder::class,
+            // ProductSeeder::class,
+            // IngredientProductSeeder::class,
             // BarcodeSuggestionSeeder::class,
         ]);
     }

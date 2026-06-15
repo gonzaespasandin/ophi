@@ -17,7 +17,7 @@ class ProductService
 
         $avoidIngredients = UserService::getAvoidedIngredients(returnOnlyIds: true);
 
-        $query = Product::with(['ingredients', 'brand', 'category'])
+        $query = Product::with(['ingredients.parents', 'brand', 'category'])
             ->select('id', 'name', 'brand_id', 'category_id')
             ->where('id', '!=', $avoidProduct);
 
@@ -44,7 +44,7 @@ class ProductService
         $queries = $request->query();
         unset($queries['page']);
 
-        $query = Product::with(['ingredients', 'brand']);
+        $query = Product::with(['ingredients.parents', 'brand']);
 
         if ($request->query('q')) {
             $name = trim($request->query('q'));
@@ -72,7 +72,7 @@ class ProductService
      */
     static public function findByNameAndBrand(string $name, string $brand) 
     {
-        $product = Product::with(['ingredients', 'brand'])
+        $product = Product::with(['ingredients.parents', 'brand'])
             ->where('name', $name)
             ->whereHas('brand', function($query) use ($brand) {
                 $query->where('name', $brand);
@@ -89,22 +89,27 @@ class ProductService
     }
 
     static public function findMatchByName(string $name) {
-        $products = Product::with(['brand', 'ingredients'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "%$name%")->orwhereHas('brand', function($query) use ($name) {
+        $products = Product::with(['brand', 'ingredients.parents'])->select('id', 'name', 'barcode', 'brand_id')->where('name', 'like', "%$name%")->orwhereHas('brand', function($query) use ($name) {
                 $query->where('name', 'like', "%$name%");
             })->limit(4)->get();
 
         return $products;
     }
 
-    static public function getOrigins() {
-        $origins = Product::select('origin as name')->get();
-        $clear = [];
-        foreach ($origins as $origin) {
-            if(!in_array($origin, $clear)) {
-                $clear[] = $origin;
-            }
+    static public function getOrigins(?string $query = null) {
+        $origins = Product::query()
+            ->select('origin as name')
+            ->whereNotNull('origin')
+            ->where('origin', '!=', '');
+
+        if ($query !== null && trim($query) !== '') {
+            $origins->where('origin', 'like', '%' . trim($query) . '%');
         }
 
-        return $clear;
+        return $origins
+            ->distinct()
+            ->orderBy('origin')
+            ->limit(80)
+            ->get();
     }
 }

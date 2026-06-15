@@ -1,5 +1,10 @@
 <?php
 
+$allowedOrigins = array_values(array_filter(array_map(
+    'trim',
+    explode(',', env('CORS_ALLOWED_ORIGINS', 'https://ophi.arcxvi.stream,https://conoce-ophi.arcxvi.stream,http://localhost:5173,http://localhost:4321'))
+)));
+
 return [
 
     /*
@@ -17,12 +22,7 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_origins' => [
-        'https://ophi.arcxvi.stream',
-        'https://conoce-ophi.arcxvi.stream',
-        'http://localhost:5173',
-        'http://localhost:4321',
-    ],
+    'allowed_origins' => $allowedOrigins,
 
     'allowed_origins_patterns' => [],
 

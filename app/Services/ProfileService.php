@@ -25,10 +25,32 @@ class ProfileService
         }
 
         Log::debug('Usuario está autenticado');
-        $profiles = Profile::with('ingredients.ingredients.ingredients.ingredients')->where('user_id', auth()->user()->id)->get();
-        Log::info('Perfiles encontrados:', ['profiles' => $profiles]);
+        $profiles = Profile::with(['ingredients' => function ($query) {
+            $query->select('ingredients.id', 'ingredients.name', 'ingredients.icon', 'ingredients.is_group', 'ingredients.aliases');
+        }])
+            ->where('user_id', auth()->id())
+            ->get(['id', 'name', 'avatar', 'user_id', 'is_main', 'created_at', 'updated_at']);
 
-        return $profiles;
+        return $profiles->map(function (Profile $profile) {
+            $ingredientIds = $profile->ingredients
+                ->pluck('id')
+                ->map(fn ($id) => (int) $id)
+                ->unique()
+                ->values()
+                ->toArray();
+
+            return [
+                'id' => $profile->id,
+                'name' => $profile->name,
+                'avatar' => $profile->avatar,
+                'user_id' => $profile->user_id,
+                'is_main' => (bool) $profile->is_main,
+                'created_at' => $profile->created_at,
+                'updated_at' => $profile->updated_at,
+                'ingredients' => $profile->ingredients->values(),
+                'ingredient_ids' => $ingredientIds,
+            ];
+        })->values();
     }
 
     static public function store(array $data) {

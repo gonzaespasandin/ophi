@@ -13,7 +13,7 @@ class IngredientHasIngredientSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('ingredient_has_ingredients')->insert([
+        DB::table('ingredient_has_ingredients')->insertOrIgnore([
             /** INTOLERANCES (belongs_to_id: 1 && owner_id 4-18) */
             [
                 'belongs_to_id' => 1,
@@ -75,17 +75,6 @@ class IngredientHasIngredientSeeder extends Seeder
                 'belongs_to_id' => 1,
                 'owner_id' => 18,
             ],
-            [
-                'belongs_to_id' => 1,
-                'owner_id' => 50,
-            ],
-            [
-                'belongs_to_id' => 5,
-                'owner_id' => 50,
-            ],
-
-
-
             /** ALLERGIES (belongs_to_id: 2 && owner_id 19-28) */
             [
                 'belongs_to_id' => 2,
@@ -160,27 +149,7 @@ class IngredientHasIngredientSeeder extends Seeder
                 'owner_id' => 35,
             ],
 
-            /** ALLERGIES SUB-GROUPS */
-            [
-                'belongs_to_id' => 36,
-                'owner_id' => 39,
-            ],
-            [
-                'belongs_to_id' => 36,
-                'owner_id' => 40,
-            ],
-            [
-                'belongs_to_id' => 37,
-                'owner_id' => 39,
-            ],
-            [
-                'belongs_to_id' => 37,
-                'owner_id' => 41,
-            ],
-            [
-                'belongs_to_id' => 37,
-                'owner_id' => 40,
-            ],
+            /** FRUIT ALLERGY SUB-GROUPS */
             [
                 'belongs_to_id' => 19,
                 'owner_id' => 36,
@@ -192,18 +161,6 @@ class IngredientHasIngredientSeeder extends Seeder
             [
                 'belongs_to_id' => 19,
                 'owner_id' => 38,
-            ],
-            [
-                'belongs_to_id' => 19,
-                'owner_id' => 39,
-            ],
-            [
-                'belongs_to_id' => 19,
-                'owner_id' => 40,
-            ],
-            [
-                'belongs_to_id' => 19,
-                'owner_id' => 41,
             ],
         ]);
     }

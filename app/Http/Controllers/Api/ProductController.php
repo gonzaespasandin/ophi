@@ -82,8 +82,8 @@ class ProductController extends Controller
         return response()->json($result);
     }
 
-    public function getOrigins() {
-        $result = ProductService::getOrigins();
+    public function getOrigins(Request $request) {
+        $result = ProductService::getOrigins($request->query('q'));
 
         return response()->json($result);
     }

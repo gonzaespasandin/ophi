@@ -8,9 +8,15 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function getCategories() 
+    public function getCategories(Request $request) 
     {
-        $categories = Category::select('id', 'name')->get();
+        $query = Category::select('id', 'name')->orderBy('name');
+
+        if ($request->filled('q')) {
+            $query->where('name', 'like', '%' . $request->query('q') . '%');
+        }
+
+        $categories = $query->get();
         return response()->json($categories);
     }
 }

@@ -8,15 +8,26 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
-    public function getBrands() 
+    public function getBrands(Request $request) 
     {
-        $brands = Brand::select('id', 'name')->limit(50)->get();
+        $query = Brand::select('id', 'name')->orderBy('name')->limit(80);
+
+        if ($request->filled('q')) {
+            $query->where('name', 'like', '%' . $request->query('q') . '%');
+        }
+
+        $brands = $query->get();
         return response()->json($brands);
     }
 
     public function getBrandsByName(string $name) 
     {
-        $brands = Brand::select('id', 'name')->where('name', 'like', "%$name%")->limit(50)->get();
+        $brands = Brand::select('id', 'name')
+            ->where('name', 'like', "%$name%")
+            ->orderBy('name')
+            ->limit(80)
+            ->get();
+
         return response()->json($brands);
     }
 }

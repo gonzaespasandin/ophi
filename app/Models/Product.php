@@ -7,7 +7,32 @@ use Illuminate\Support\Facades\Log;
 
 class Product extends Model
 {
-    protected $fillable = ['name', 'name_normalized', 'barcode', 'rnpa', 'brand_id', 'origin', 'category_id'];
+    protected $fillable = [
+        'name',
+        'name_normalized',
+        'barcode',
+        'rnpa',
+        'brand_id',
+        'origin',
+        'category_id',
+        'source_supermarket',
+        'source_product_id',
+        'product_type',
+        'description',
+        'category_paths',
+        'nutrition',
+        'labels',
+        'source_supermarkets',
+        'img',
+        'img_alt',
+    ];
+
+    protected $casts = [
+        'category_paths' => 'array',
+        'nutrition' => 'array',
+        'labels' => 'array',
+        'source_supermarkets' => 'array',
+    ];
 
     public function getIngredientIds(): array {
         $ids = [];

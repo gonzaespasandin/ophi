@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Semilla de códigos INS (Codex Alimentarius) más comunes en alimentos
- * envasados argentinos. Se almacena en la DB del catálogo (catalog).
+ * envasados argentinos. Se almacena en la DB principal de Ophi.
  *
  * Para agregar un código nuevo: insertarlo acá y re-correr el seeder,
  * o insertarlo directo via tinker / admin UI futuro.
@@ -204,6 +204,6 @@ class InsCodesSeeder extends Seeder
             ['code' => '570',  'nombre' => 'ácido esteárico',                         'categoria' => 'antiapelmazante'],
         ];
 
-        DB::connection('catalog')->table('ins_codes')->insertOrIgnore($codes);
+        DB::table('ins_codes')->insertOrIgnore($codes);
     }
 }

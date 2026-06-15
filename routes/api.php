@@ -109,7 +109,7 @@ Route::post('/subscribe-email', [NewsletterSubscriberController::class, 'subscri
 
 
 
-/** CATÁLOGO EXTERNO (EAN_VALIDOS.db) */
+/** PRODUCTOS OPHI POR EAN/BARCODE */
 Route::middleware(['auth:sanctum'])
     ->group(function () {
         Route::get('/catalog/{ean}', [CatalogController::class, 'findByEan'])
@@ -118,11 +118,13 @@ Route::middleware(['auth:sanctum'])
 
 
 
-/** ADMIN — OCR de ingredientes sobre el catálogo */
+/** ADMIN - OCR de ingredientes sobre productos Ophi */
 Route::middleware(['auth:sanctum', EnsureIsAdmin::class])
     ->prefix('admin')
     ->group(function () {
         Route::get('/catalog/{ean}', [AdminCatalogController::class, 'lookup'])
+            ->where('ean', '[0-9]+');
+        Route::post('/catalog/{ean}', [AdminCatalogController::class, 'create'])
             ->where('ean', '[0-9]+');
         Route::get('/catalog/{ean}/similar', [AdminCatalogController::class, 'similar'])
             ->where('ean', '[0-9]+');

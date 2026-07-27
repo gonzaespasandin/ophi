@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class History extends Model
+{
+    protected $table = 'scans_history';
+
+    protected $fillable = [
+        'user_id',
+        'product_id',
+        'scanned_at',
+        'scan_img',
+    ];
+    
+    protected function casts(): array
+    {
+        return [
+            'scanned_at' => 'datetime',
+        ];
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function product() {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function results() {
+        return $this->hasMany(HistoryResult::class, 'scan_history_id');
+    }
+}

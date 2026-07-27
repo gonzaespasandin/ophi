@@ -1,0 +1,34 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class IngredientProfileSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        DB::table('ingredient_profile')->insert([
+            [
+                'ingredient_id' => 1, // Alergias
+                'profile_id' => 1,
+                'care' => 0,
+            ],
+            [
+                'ingredient_id' => 2,
+                'profile_id' => 1,
+                'care' => 0,
+            ],
+            [
+                'ingredient_id' =>3,
+                'profile_id' => 2,
+                'care' => 0,
+            ],
+        ]);
+    }
+}

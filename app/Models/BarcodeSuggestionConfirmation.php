@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class BarcodeSuggestionConfirmation extends Model
+{
+    protected $table = 'barcode_suggestion_scans';
+
+    protected $fillable = ['barcode_suggestion_id', 'user_id', 'img'];
+
+    public function suggestion() {
+        return $this->belongsTo(BarcodeSuggestion::class, 'barcode_suggestion_id');
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+}

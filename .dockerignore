@@ -1,0 +1,15 @@
+.git
+.env
+vendor
+node_modules
+npm-debug.log
+Dockerfile
+docker-compose*.yml
+database/*.db
+storage/*.key
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+bootstrap/cache/*.php

@@ -3,87 +3,78 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Profile;
 use App\Models\User;
 use App\Services\ProfileService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
-    public function get_auth_user_profiles(): \Illuminate\Http\JsonResponse
+    public function __construct(private ProfileService $profileService)
     {
-        Log::debug('Obteniendo los resultados del perfil autenticado');
-        $profiles = ProfileService::getAuthUserProfiles();
-
-        return response()->json($profiles);
     }
 
-    public function store(Request $request) {
+    public function get_auth_user_profiles(): JsonResponse
+    {
+        return response()->json($this->profileService->getAuthUserProfiles());
+    }
 
-        //------------ Chequeo de subscription del usuario autenticado
-        $user = User::with(['profiles', 'subscription'])
-        ->find(Auth::id());
+    public function store(Request $request): JsonResponse
+    {
+        $user = User::with(['profiles', 'subscription'])->find(Auth::id());
         $userProfiles = $user->profiles;
-        if(!$user->isPremium() && count($userProfiles) >= 1) {
-            return response()->json([
-                'message' => 'Usuario no premium'
-            ], 403);
-        }
-        if($user->isPremium() && count($userProfiles) >= 10) {
-            return response()->json([
-                'message' => 'Máximo de 10 perfiles por usuario'
-            ], 403);
-        }
-        //-------------
 
-        Log::debug('Guardando un perfil de un usuario autenticado');
+        if (! $user->isPremium() && count($userProfiles) >= 1) {
+            return response()->json(['message' => 'Usuario no premium'], 403);
+        }
+
+        if ($user->isPremium() && count($userProfiles) >= 10) {
+            return response()->json(['message' => 'Máximo de 10 perfiles por usuario'], 403);
+        }
+
         $data = $request->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
             'ingredients' => 'nullable|array',
-        ],
-        [
+        ], [
             'name.required' => 'El nombre es obligatorio',
         ]);
-        
-        Log::debug('La validación es correcta');
-        Log::info('Datos del perfil:', ['data' => $data]);
 
+        try {
+            $profile = $this->profileService->store($data);
 
-       try {
-        $profile = ProfileService::store($data);
-        return response()->json([
-            'message' => 'Perfil creado correctamente',
-            'profile' => $profile
-        ]);
-       } catch (\Exception $e) {
-        return response()->json([
-            'errors' => $e
-        ], 422);
-       }
+            return response()->json([
+                'message' => 'Perfil creado correctamente',
+                'profile' => $profile,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 422);
+        }
     }
 
-    public function update(int $id, Request $request) {
-        Log::debug('Actualizando el perfil de un usuario autenticado');
-        Log::info('Ingredientes', ['key' => $request->input('ingredients', [])]);
-        Log::info('[]', ['key' => $request['ingredients[]']]);
+    public function update(int $id, Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'avatar_color' => 'sometimes|nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
+            'ingredients' => 'sometimes|nullable|array',
+        ], [
+            'name.required' => 'El nombre es obligatorio',
+            'avatar_color.regex' => 'El color no tiene un formato válido',
+        ]);
 
-        $ingredients = $request->input('ingredients', []);
-        $profile = ProfileService::update($id, $ingredients);
-        
+        $profile = $this->profileService->update($id, $data);
+
         return response()->json([
             'message' => 'Perfil guardado',
-            'profile' => $profile
+            'profile' => $profile,
         ]);
     }
 
-    public function destroy(int $id) {
-        ProfileService::destroy($id);
-        
-        return response()->json([
-            'message' => 'Perfil eliminado'
-        ]);
+    public function destroy(int $id): JsonResponse
+    {
+        $this->profileService->destroy($id);
+
+        return response()->json(['message' => 'Perfil eliminado']);
     }
 }

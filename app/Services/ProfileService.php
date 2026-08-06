@@ -2,37 +2,28 @@
 
 namespace App\Services;
 
-use App\Models\History;
-use App\Models\HistoryResult;
 use App\Models\Profile;
-use App\Models\Subscription;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use Error;
-use Exception;
-use Illuminate\Support\Arr;
 
-class ProfileService 
+class ProfileService
 {
-    static public function getAuthUserProfiles() {
-        if(!auth()->check()) {
-            Log::debug('Usuario no está autenticado');
-            return [];
+    public function getAuthUserProfiles(): Collection
+    {
+        if (! Auth::check()) {
+            return collect();
         }
 
-        Log::debug('Usuario está autenticado');
         $profiles = Profile::with(['ingredients' => function ($query) {
             $query->select('ingredients.id', 'ingredients.name', 'ingredients.icon', 'ingredients.is_group', 'ingredients.aliases');
         }])
             ->where(function ($query) {
-                $query->where('owner_id', auth()->id())
-                    ->orWhere('user_id', auth()->id());
+                $query->where('owner_id', Auth::id())
+                    ->orWhere('user_id', Auth::id());
             })
-            ->get(['id', 'name', 'avatar', 'user_id', 'owner_id', 'is_main', 'created_at', 'updated_at']);
+            ->get(['id', 'name', 'avatar', 'avatar_color', 'user_id', 'owner_id', 'is_main', 'created_at', 'updated_at']);
 
         return $profiles->map(function (Profile $profile) {
             $ingredientIds = $profile->ingredients
@@ -46,6 +37,7 @@ class ProfileService
                 'id' => $profile->id,
                 'name' => $profile->name,
                 'avatar' => $profile->avatar,
+                'avatar_color' => $profile->avatar_color,
                 'user_id' => $profile->owner_id ?? $profile->user_id,
                 'owner_id' => $profile->owner_id ?? $profile->user_id,
                 'is_main' => (bool) $profile->is_main,
@@ -57,50 +49,73 @@ class ProfileService
         })->values();
     }
 
-    static public function store(array $data) {
+    public function store(array $data): Profile
+    {
         $repeatedName = Profile::where(function ($query) {
             $query->where('owner_id', Auth::id())
                 ->orWhere('user_id', Auth::id());
         })->where('name', $data['name'])->exists();
-        if($repeatedName) {
+
+        if ($repeatedName) {
             throw new Exception('Ya tenés un perfil con ese nombre');
         }
-        // ------------------------------------------------
 
-        $profile = DB::transaction(function () use ($data) {  
+        return DB::transaction(function () use ($data) {
             $profile = new Profile();
             $profile->name = $data['name'];
             $profile->avatar = $data['avatar'] ?? null;
-            $profile->user_id = auth()->user()->id;
-            $profile->owner_id = auth()->user()->id;
+            $profile->avatar_color = $data['avatar_color'] ?? null;
+            $profile->user_id = Auth::id();
+            $profile->owner_id = Auth::id();
             $profile->save();
 
             $profile->ingredients()->attach($data['ingredients'] ?? []);
 
             return $profile;
         });
-
-        return $profile;
     }
 
-    static public function update(int $id, array $ingredients) {
-        $profile = Profile::with('ingredients')->findOrFail($id);
+    public function update(int $id, array $data): Profile
+    {
+        $profile = $this->findOwned($id);
 
-        DB::transaction(function () use ($profile, $ingredients) {  
-            $profile->ingredients()->sync($ingredients ?? []);
+        return DB::transaction(function () use ($profile, $data) {
+            if (array_key_exists('name', $data)) {
+                $profile->name = $data['name'];
+            }
+
+            if (array_key_exists('avatar_color', $data)) {
+                $profile->avatar_color = $data['avatar_color'];
+            }
+
             $profile->save();
-            return;
-        });
 
-        return $profile;
+            if (array_key_exists('ingredients', $data)) {
+                $profile->ingredients()->sync($data['ingredients'] ?? []);
+            }
+
+            return $profile->load('ingredients');
+        });
     }
 
-    static public function destroy(int $id) {
-        $profile = Profile::findOrFail($id);
+    public function destroy(int $id): void
+    {
+        $profile = $this->findOwned($id);
 
-        DB::transaction(function () use ($profile)  {  
+        DB::transaction(function () use ($profile) {
             $profile->ingredients()->detach();
             $profile->delete();
         });
+    }
+
+    /**
+     * Resuelve un perfil restringido al usuario autenticado.
+     * Devuelve 404 en lugar de 403 para no revelar la existencia de perfiles ajenos.
+     */
+    private function findOwned(int $id): Profile
+    {
+        return Profile::with('ingredients')
+            ->where('owner_id', Auth::id())
+            ->findOrFail($id);
     }
 }

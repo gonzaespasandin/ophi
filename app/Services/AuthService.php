@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Profile;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -85,6 +86,13 @@ class AuthService
                     ]);
                 }
             }
+
+            Profile::create([
+                'name' => $name,
+                'owner_id' => $user->id,
+                'user_id' => $user->id,
+                'is_main' => true,
+            ]);
 
             return $user;
         });

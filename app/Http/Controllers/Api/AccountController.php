@@ -34,10 +34,14 @@ class AccountController extends Controller
         ]);
     }
 
-    public function confirmEmail(string $token): JsonResponse
+    public function confirmEmail(Request $request): JsonResponse
     {
+        $data = $request->validate([
+            'token' => 'required|string',
+        ]);
+
         try {
-            $user = $this->emailChangeService->confirm($token);
+            $user = $this->emailChangeService->confirm($data['token']);
         } catch (InvalidEmailChangeTokenException $e) {
             return response()->json(['message' => $e->getMessage()], 410);
         }

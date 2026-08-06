@@ -26,7 +26,7 @@ class ConfirmEmailChangeTest extends TestCase
         $user = User::factory()->create(['email' => 'viejo@ophi.test']);
         $this->crearSolicitud($user, 'nuevo@ophi.test', 'token-valido');
 
-        $response = $this->postJson('/api/account/email/confirm/token-valido');
+        $response = $this->postJson('/api/account/email/confirm', ['token' => 'token-valido']);
 
         $response->assertOk();
         $this->assertSame('nuevo@ophi.test', $user->fresh()->email);
@@ -38,7 +38,7 @@ class ConfirmEmailChangeTest extends TestCase
         $user = User::factory()->create(['email' => 'viejo@ophi.test']);
         $this->crearSolicitud($user, 'nuevo@ophi.test', 'token-vencido', now()->subMinute());
 
-        $response = $this->postJson('/api/account/email/confirm/token-vencido');
+        $response = $this->postJson('/api/account/email/confirm', ['token' => 'token-vencido']);
 
         $response->assertStatus(410);
         $this->assertSame('viejo@ophi.test', $user->fresh()->email);
@@ -48,7 +48,7 @@ class ConfirmEmailChangeTest extends TestCase
     {
         $user = User::factory()->create(['email' => 'viejo@ophi.test']);
 
-        $response = $this->postJson('/api/account/email/confirm/token-inventado');
+        $response = $this->postJson('/api/account/email/confirm', ['token' => 'token-inventado']);
 
         $response->assertStatus(410);
         $this->assertSame('viejo@ophi.test', $user->fresh()->email);
@@ -60,9 +60,22 @@ class ConfirmEmailChangeTest extends TestCase
         $this->crearSolicitud($user, 'ocupado@ophi.test', 'token-valido');
         User::factory()->create(['email' => 'ocupado@ophi.test']);
 
-        $response = $this->postJson('/api/account/email/confirm/token-valido');
+        $response = $this->postJson('/api/account/email/confirm', ['token' => 'token-valido']);
 
         $response->assertStatus(410);
         $this->assertSame('viejo@ophi.test', $user->fresh()->email);
+    }
+
+    public function test_rechaza_el_mismo_token_usado_dos_veces(): void
+    {
+        $user = User::factory()->create(['email' => 'viejo@ophi.test']);
+        $this->crearSolicitud($user, 'nuevo@ophi.test', 'token-valido');
+
+        $primera = $this->postJson('/api/account/email/confirm', ['token' => 'token-valido']);
+        $segunda = $this->postJson('/api/account/email/confirm', ['token' => 'token-valido']);
+
+        $primera->assertOk();
+        $segunda->assertStatus(410);
+        $this->assertSame('nuevo@ophi.test', $user->fresh()->email);
     }
 }

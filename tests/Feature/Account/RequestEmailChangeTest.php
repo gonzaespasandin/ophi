@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Account;
 
+use App\Models\EmailChangeRequest;
 use App\Models\User;
 use App\Notifications\EmailChangeRequestedNotification;
 use App\Notifications\EmailChangeVerificationNotification;
@@ -41,8 +42,35 @@ class RequestEmailChangeTest extends TestCase
             'current_password' => 'password',
         ]);
 
-        Notification::assertSentOnDemand(EmailChangeVerificationNotification::class);
+        $storedToken = EmailChangeRequest::where('user_id', $user->id)->value('token');
+
+        Notification::assertSentOnDemand(
+            EmailChangeVerificationNotification::class,
+            function (EmailChangeVerificationNotification $notification, array $channels, $notifiable) use ($storedToken) {
+                $mail = $notification->toMail($notifiable);
+
+                $this->assertSame(hash('sha256', $notification->token), $storedToken);
+                $this->assertStringContainsString('/confirmar-email/'.$notification->token, $mail->actionUrl);
+
+                return true;
+            }
+        );
+
         Notification::assertSentTo($user, EmailChangeRequestedNotification::class);
+    }
+
+    public function test_rechaza_el_mismo_email_actual(): void
+    {
+        Notification::fake();
+        $user = User::factory()->create(['email' => 'actual@ophi.test']);
+
+        $response = $this->actingAs($user)->putJson('/api/account/email', [
+            'new_email' => 'actual@ophi.test',
+            'current_password' => 'password',
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertDatabaseCount('email_change_requests', 0);
     }
 
     public function test_rechaza_una_contrasena_incorrecta(): void

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\MainProfileDeletionException;
 use App\Models\Profile;
 use Exception;
 use Illuminate\Support\Collection;
@@ -101,6 +102,10 @@ class ProfileService
     public function destroy(int $id): void
     {
         $profile = $this->findOwned($id);
+
+        if ($profile->is_main) {
+            throw new MainProfileDeletionException();
+        }
 
         DB::transaction(function () use ($profile) {
             $profile->ingredients()->detach();

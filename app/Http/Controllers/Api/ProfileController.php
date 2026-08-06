@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\MainProfileDeletionException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\ProfileService;
@@ -73,7 +74,11 @@ class ProfileController extends Controller
 
     public function destroy(int $id): JsonResponse
     {
-        $this->profileService->destroy($id);
+        try {
+            $this->profileService->destroy($id);
+        } catch (MainProfileDeletionException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
 
         return response()->json(['message' => 'Perfil eliminado']);
     }

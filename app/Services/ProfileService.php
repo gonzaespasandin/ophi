@@ -108,10 +108,6 @@ class ProfileService
         });
     }
 
-    /**
-     * Resuelve un perfil restringido al usuario autenticado.
-     * Devuelve 404 en lugar de 403 para no revelar la existencia de perfiles ajenos.
-     */
     private function findOwned(int $id): Profile
     {
         return Profile::with('ingredients')

@@ -49,6 +49,9 @@ Route::middleware(['auth:sanctum'])
         Route::put('/email', [AccountController::class, 'updateEmail'])->middleware('throttle:6,1');
     });
 
+Route::post('/account/email/confirm/{token}', [AccountController::class, 'confirmEmail'])
+    ->middleware('throttle:10,1');
+
 
 
 /** INGREDIENTS */

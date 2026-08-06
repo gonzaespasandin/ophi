@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\InvalidEmailChangeTokenException;
 use App\Models\EmailChangeRequest;
 use App\Models\User;
 use App\Notifications\EmailChangeRequestedNotification;
@@ -55,5 +56,28 @@ class EmailChangeService
         $user->notify(new EmailChangeRequestedNotification($newEmail));
 
         return $request;
+    }
+
+    public function confirm(string $plainToken): User
+    {
+        $request = EmailChangeRequest::where('token', hash('sha256', $plainToken))->first();
+
+        if (! $request || $request->isExpired()) {
+            throw new InvalidEmailChangeTokenException();
+        }
+
+        if (User::where('email', $request->new_email)->exists()) {
+            throw new InvalidEmailChangeTokenException('Ese email ya está registrado por otra cuenta.');
+        }
+
+        return DB::transaction(function () use ($request) {
+            $user = $request->user;
+            $user->email = $request->new_email;
+            $user->save();
+
+            $request->delete();
+
+            return $user;
+        });
     }
 }

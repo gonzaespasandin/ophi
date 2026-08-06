@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\InvalidEmailChangeTokenException;
 use App\Http\Controllers\Controller;
 use App\Services\EmailChangeService;
 use Illuminate\Http\JsonResponse;
@@ -30,6 +31,20 @@ class AccountController extends Controller
 
         return response()->json([
             'message' => 'Te enviamos un mail a '.$data['new_email'].' para confirmar el cambio',
+        ]);
+    }
+
+    public function confirmEmail(string $token): JsonResponse
+    {
+        try {
+            $user = $this->emailChangeService->confirm($token);
+        } catch (InvalidEmailChangeTokenException $e) {
+            return response()->json(['message' => $e->getMessage()], 410);
+        }
+
+        return response()->json([
+            'message' => 'Tu email fue actualizado',
+            'email' => $user->email,
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\InvalidEmailChangeTokenException;
 use App\Http\Controllers\Controller;
+use App\Models\EmailChangeRequest;
 use App\Services\EmailChangeService;
 use App\Services\NewsletterSubscriberService;
 use Illuminate\Http\JsonResponse;
@@ -15,6 +16,22 @@ class AccountController extends Controller
         private EmailChangeService $emailChangeService,
         private NewsletterSubscriberService $newsletterService
     ) {}
+
+    public function show(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $pending = EmailChangeRequest::where('user_id', $user->id)
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
+
+        return response()->json([
+            'email' => $user->email,
+            'pending_email' => $pending?->new_email,
+            'newsletter_subscribed' => $this->newsletterService->isSubscribed($user),
+        ]);
+    }
 
     public function updateEmail(Request $request): JsonResponse
     {

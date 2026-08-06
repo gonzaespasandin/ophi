@@ -46,6 +46,7 @@ Route::delete('/profiles/{id}', [ProfileController::class, 'destroy'])->middlewa
 Route::middleware(['auth:sanctum'])
     ->prefix('account')
     ->group(function () {
+        Route::get('/', [AccountController::class, 'show']);
         Route::put('/email', [AccountController::class, 'updateEmail'])->middleware('throttle:6,1');
         Route::put('/newsletter', [AccountController::class, 'updateNewsletter']);
     });

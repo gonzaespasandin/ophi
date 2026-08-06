@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\InvalidEmailChangeTokenException;
 use App\Http\Controllers\Controller;
 use App\Services\EmailChangeService;
+use App\Services\NewsletterSubscriberService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    public function __construct(private EmailChangeService $emailChangeService) {}
+    public function __construct(
+        private EmailChangeService $emailChangeService,
+        private NewsletterSubscriberService $newsletterService
+    ) {}
 
     public function updateEmail(Request $request): JsonResponse
     {
@@ -49,6 +53,27 @@ class AccountController extends Controller
         return response()->json([
             'message' => 'Tu email fue actualizado',
             'email' => $user->email,
+        ]);
+    }
+
+    public function updateNewsletter(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'subscribed' => 'required|boolean',
+        ], [
+            'subscribed.required' => 'Falta indicar si querés recibir novedades',
+        ]);
+
+        $user = $request->user();
+
+        $data['subscribed']
+            ? $this->newsletterService->subscribe($user->email, $user)
+            : $this->newsletterService->unsubscribe($user->email, $user);
+
+        return response()->json([
+            'message' => $data['subscribed']
+                ? 'Vas a recibir nuestras novedades'
+                : 'Ya no vas a recibir novedades',
         ]);
     }
 }

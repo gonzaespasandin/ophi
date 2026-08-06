@@ -8,8 +8,13 @@ use Illuminate\Http\Request;
 
 class NewsletterSubscriberController extends Controller
 {
-    function subscribe(Request $request) {
-        NewsletterSubscriberService::subscribe($request->input('email'));
+    public function __construct(private NewsletterSubscriberService $newsletterService)
+    {
+    }
+
+    public function subscribe(Request $request)
+    {
+        $this->newsletterService->subscribe($request->input('email'));
 
         return response()->noContent();
     }

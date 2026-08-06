@@ -9,11 +9,12 @@ class NewsletterSubscriber extends Model
     protected $table = 'newsletter';
 
     protected $fillable = [
+        'user_id',
         'email',
         'status',
-        'last_sent_at',
         'subscribed_at',
         'unsubscribed_at',
+        'last_sent_at',
     ];
 
     protected function casts(): array

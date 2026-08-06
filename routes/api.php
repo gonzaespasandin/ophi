@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum'])
     ->prefix('account')
     ->group(function () {
         Route::put('/email', [AccountController::class, 'updateEmail'])->middleware('throttle:6,1');
+        Route::put('/newsletter', [AccountController::class, 'updateNewsletter']);
     });
 
 Route::post('/account/email/confirm', [AccountController::class, 'confirmEmail'])

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\InvalidEmailChangeTokenException;
 use App\Models\EmailChangeRequest;
+use App\Models\NewsletterSubscriber;
 use App\Models\User;
 use App\Notifications\EmailChangeRequestedNotification;
 use App\Notifications\EmailChangeVerificationNotification;
@@ -72,8 +73,20 @@ class EmailChangeService
 
         return DB::transaction(function () use ($request) {
             $user = $request->user;
+            $oldEmail = $user->email;
+
             $user->email = $request->new_email;
             $user->save();
+
+            $subscriber = NewsletterSubscriber::where('user_id', $user->id)
+                ->orWhere('email', $oldEmail)
+                ->first();
+
+            if ($subscriber) {
+                $subscriber->user_id = $user->id;
+                $subscriber->email = $user->email;
+                $subscriber->save();
+            }
 
             $request->delete();
 

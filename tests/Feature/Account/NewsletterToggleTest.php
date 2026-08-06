@@ -3,6 +3,7 @@
 namespace Tests\Feature\Account;
 
 use App\Models\EmailChangeRequest;
+use App\Models\NewsletterSubscriber;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -36,6 +37,27 @@ class NewsletterToggleTest extends TestCase
         $this->assertDatabaseHas('newsletter', [
             'email' => 'yo@ophi.test',
             'status' => 'unsubscribed',
+        ]);
+    }
+
+    public function test_reclama_una_suscripcion_anonima_existente(): void
+    {
+        $user = User::factory()->create(['email' => 'yo@ophi.test']);
+        $anonima = NewsletterSubscriber::create([
+            'user_id' => null,
+            'email' => 'yo@ophi.test',
+            'status' => 'unsubscribed',
+        ]);
+
+        $response = $this->actingAs($user)->putJson('/api/account/newsletter', ['subscribed' => true]);
+
+        $response->assertOk();
+        $this->assertDatabaseCount('newsletter', 1);
+        $this->assertDatabaseHas('newsletter', [
+            'id' => $anonima->id,
+            'email' => 'yo@ophi.test',
+            'user_id' => $user->id,
+            'status' => 'subscribed',
         ]);
     }
 

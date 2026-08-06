@@ -3,6 +3,7 @@
 namespace Tests\Feature\Account;
 
 use App\Models\EmailChangeRequest;
+use App\Models\NewsletterSubscriber;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -77,5 +78,52 @@ class ConfirmEmailChangeTest extends TestCase
         $primera->assertOk();
         $segunda->assertStatus(410);
         $this->assertSame('nuevo@ophi.test', $user->fresh()->email);
+    }
+
+    public function test_absorbe_una_suscripcion_anonima_que_choca_con_el_nuevo_email(): void
+    {
+        $user = User::factory()->create(['email' => 'viejo@ophi.test']);
+        $this->actingAs($user)->putJson('/api/account/newsletter', ['subscribed' => true]);
+        $this->crearSolicitud($user, 'nuevo@ophi.test', 'token-valido');
+
+        NewsletterSubscriber::create([
+            'user_id' => null,
+            'email' => 'nuevo@ophi.test',
+            'status' => 'subscribed',
+            'subscribed_at' => now(),
+        ]);
+
+        $response = $this->postJson('/api/account/email/confirm', ['token' => 'token-valido']);
+
+        $response->assertOk();
+        $this->assertSame('nuevo@ophi.test', $user->fresh()->email);
+        $this->assertDatabaseHas('newsletter', [
+            'user_id' => $user->id,
+            'email' => 'nuevo@ophi.test',
+        ]);
+        $this->assertDatabaseCount('newsletter', 1);
+    }
+
+    public function test_no_roba_la_suscripcion_de_otro_usuario_al_confirmar_el_email(): void
+    {
+        $user = User::factory()->create(['email' => 'viejo@ophi.test']);
+        $this->actingAs($user)->putJson('/api/account/newsletter', ['subscribed' => true]);
+        $this->crearSolicitud($user, 'nuevo@ophi.test', 'token-valido');
+
+        $otro = User::factory()->create(['email' => 'otro@ophi.test']);
+        $this->actingAs($otro)->putJson('/api/account/newsletter', ['subscribed' => true]);
+        NewsletterSubscriber::where('user_id', $otro->id)->update(['email' => 'nuevo@ophi.test']);
+
+        $response = $this->postJson('/api/account/email/confirm', ['token' => 'token-valido']);
+
+        $response->assertOk();
+        $this->assertSame('nuevo@ophi.test', $user->fresh()->email);
+        $this->assertDatabaseHas('newsletter', [
+            'user_id' => $otro->id,
+            'email' => 'nuevo@ophi.test',
+        ]);
+        $this->assertDatabaseMissing('newsletter', [
+            'user_id' => $user->id,
+        ]);
     }
 }

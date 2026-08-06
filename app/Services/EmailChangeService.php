@@ -83,9 +83,24 @@ class EmailChangeService
                 ->first();
 
             if ($subscriber) {
-                $subscriber->user_id = $user->id;
-                $subscriber->email = $user->email;
-                $subscriber->save();
+                $colliding = NewsletterSubscriber::where('email', $request->new_email)
+                    ->where('id', '!=', $subscriber->id)
+                    ->first();
+
+                if ($colliding) {
+                    if ($colliding->user_id === null) {
+                        $colliding->delete();
+                    } else {
+                        $subscriber->delete();
+                        $subscriber = null;
+                    }
+                }
+
+                if ($subscriber) {
+                    $subscriber->user_id = $user->id;
+                    $subscriber->email = $user->email;
+                    $subscriber->save();
+                }
             }
 
             $request->delete();

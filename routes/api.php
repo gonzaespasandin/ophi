@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController as ApiBrandController;
 use App\Http\Controllers\Api\CatalogController;
@@ -38,6 +39,15 @@ Route::get('/user-profiles', [ProfileController::class, 'get_auth_user_profiles'
 Route::post('/profiles', [ProfileController::class, 'store'])->middleware('auth:sanctum');
 Route::put('/profiles/{id}', [ProfileController::class, 'update'])->middleware('auth:sanctum');
 Route::delete('/profiles/{id}', [ProfileController::class, 'destroy'])->middleware('auth:sanctum');
+
+
+
+/** ACCOUNT */
+Route::middleware(['auth:sanctum'])
+    ->prefix('account')
+    ->group(function () {
+        Route::put('/email', [AccountController::class, 'updateEmail'])->middleware('throttle:6,1');
+    });
 
 
 

@@ -119,4 +119,19 @@ class RequestEmailChangeTest extends TestCase
         $this->assertDatabaseCount('email_change_requests', 1);
         $this->assertDatabaseHas('email_change_requests', ['new_email' => 'segundo@ophi.test']);
     }
+
+    public function test_no_deja_la_solicitud_pendiente_si_falla_el_envio_al_nuevo_email(): void
+    {
+        config(['app.spa_url' => null]);
+        $user = User::factory()->create(['email' => 'viejo@ophi.test']);
+
+        $response = $this->actingAs($user)->putJson('/api/account/email', [
+            'new_email' => 'nuevo@ophi.test',
+            'current_password' => 'password',
+        ]);
+
+        $response->assertStatus(500);
+        $this->assertDatabaseCount('email_change_requests', 0);
+        $this->assertSame('viejo@ophi.test', $user->fresh()->email);
+    }
 }

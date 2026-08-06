@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use RuntimeException;
 
 class EmailChangeVerificationNotification extends Notification
 {
@@ -16,7 +17,13 @@ class EmailChangeVerificationNotification extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        $url = rtrim(config('app.spa_url'), '/').'/confirmar-email/'.$this->token;
+        $spaUrl = config('app.spa_url');
+
+        if (blank($spaUrl)) {
+            throw new RuntimeException('SPA_URL is not configured; cannot build the email confirmation link.');
+        }
+
+        $url = rtrim($spaUrl, '/').'/confirmar-email/'.$this->token;
 
         return (new MailMessage)
             ->subject('Confirmá tu nuevo email | Ophi')

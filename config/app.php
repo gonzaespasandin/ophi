@@ -53,7 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-    'spa_url' => env('SPA_URL', 'http://localhost:5173/'),
+    'spa_url' => env('SPA_URL'),
     'landing_url' => env('LANDING_URL', 'http://localhost:4321/'),
 
     /*

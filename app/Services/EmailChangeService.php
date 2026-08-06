@@ -10,6 +10,7 @@ use App\Notifications\EmailChangeRequestedNotification;
 use App\Notifications\EmailChangeVerificationNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -51,10 +52,23 @@ class EmailChangeService
             ]);
         });
 
-        Notification::route('mail', $newEmail)
-            ->notify(new EmailChangeVerificationNotification($plainToken));
+        try {
+            Notification::route('mail', $newEmail)
+                ->notify(new EmailChangeVerificationNotification($plainToken));
+        } catch (\Throwable $e) {
+            $request->delete();
 
-        $user->notify(new EmailChangeRequestedNotification($newEmail));
+            throw $e;
+        }
+
+        try {
+            $user->notify(new EmailChangeRequestedNotification($newEmail));
+        } catch (\Throwable $e) {
+            Log::warning('Could not notify the previous address about an email change request.', [
+                'user_id' => $user->id,
+                'exception' => $e->getMessage(),
+            ]);
+        }
 
         return $request;
     }

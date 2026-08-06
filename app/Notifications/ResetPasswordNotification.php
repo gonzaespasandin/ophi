@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use RuntimeException;
 
 class ResetPasswordNotification extends Notification
 {
@@ -21,7 +22,13 @@ class ResetPasswordNotification extends Notification
 
     public function toMail($notifiable)
     {
-        $url = config('app.spa_url') . '/reset-password/' . $this->token . '/' . urlencode($notifiable->email);
+        $spaUrl = config('app.spa_url');
+
+        if (blank($spaUrl)) {
+            throw new RuntimeException('SPA_URL is not configured; cannot build the password reset link.');
+        }
+
+        $url = rtrim($spaUrl, '/') . '/reset-password/' . $this->token . '/' . urlencode($notifiable->email);
 
         return (new MailMessage)
             ->subject('Recuperar contraseña | Ophi')

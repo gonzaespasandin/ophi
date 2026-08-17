@@ -103,7 +103,7 @@ class ProductController extends Controller
     }
 
     public function getSafeProducts() {
-        $result = ProductService::getSafeProducts();
+        $result = ProductService::getProductsSafeForAnyProfile();
 
         return response()->json($result);
     }

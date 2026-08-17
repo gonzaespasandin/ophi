@@ -9,6 +9,84 @@ use Illuminate\Http\Request;
 
 class ProductService
 {
+    /**
+     * How many products to pull before judging them profile by profile. The
+     * database can only rule out what everybody avoids, so the final filter
+     * happens in PHP and needs room to still reach the requested limit.
+     */
+    private const CANDIDATE_MULTIPLIER = 4;
+
+    /**
+     * Products no profile of the household has to avoid, each annotated with the
+     * profiles it is safe for so the home can say who it is recommended to.
+     *
+     * A product is worth suggesting when at least one profile can eat it: the
+     * ones everybody can eat come first.
+     */
+    static public function getProductsSafeForAnyProfile(int $limit = 7): \Illuminate\Support\Collection
+    {
+        if(!Auth::check()) {
+            return collect();
+        }
+
+        $avoidedByProfile = UserService::getAvoidedIngredientIdsByProfile();
+
+        if($avoidedByProfile->isEmpty()) {
+            return collect();
+        }
+
+        $avoidedByEveryProfile = self::ingredientsNobodyCanEat($avoidedByProfile);
+
+        return Product::with(['ingredients:id', 'brand'])
+            ->select('id', 'name', 'img', 'img_alt', 'brand_id', 'category_id')
+            ->whereDoesntHave('ingredients', function($query) use ($avoidedByEveryProfile) {
+                $query->whereIn('ingredients.id', $avoidedByEveryProfile);
+            })
+            ->limit($limit * self::CANDIDATE_MULTIPLIER)
+            ->get()
+            ->map(fn (Product $product) => self::withSafeProfiles($product, $avoidedByProfile))
+            ->filter(fn (Product $product) => count($product->safe_for_profile_ids) > 0)
+            ->sortByDesc(fn (Product $product) => count($product->safe_for_profile_ids))
+            ->take($limit)
+            ->values();
+    }
+
+    /**
+     * The ingredients every single profile avoids. Nothing containing one of
+     * these can be recommended to anybody, so the database can drop them upfront.
+     *
+     * @param  \Illuminate\Support\Collection<int, array<int, int>>  $avoidedByProfile
+     * @return array<int, int>
+     */
+    static private function ingredientsNobodyCanEat(\Illuminate\Support\Collection $avoidedByProfile): array
+    {
+        $shared = $avoidedByProfile->reduce(
+            fn (?array $carry, array $avoided) => $carry === null
+                ? $avoided
+                : array_intersect($carry, $avoided)
+        );
+
+        return array_values($shared ?? []);
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, array<int, int>>  $avoidedByProfile
+     */
+    static private function withSafeProfiles(Product $product, \Illuminate\Support\Collection $avoidedByProfile): Product
+    {
+        $ingredientIds = $product->ingredients->pluck('id')->all();
+
+        $product->safe_for_profile_ids = $avoidedByProfile
+            ->filter(fn (array $avoided) => count(array_intersect($ingredientIds, $avoided)) === 0)
+            ->keys()
+            ->all();
+
+        // The home only needs to name the product, not to re-check it.
+        $product->unsetRelation('ingredients');
+
+        return $product;
+    }
+
     static public function getSafeProducts(int $brand_id = 0, int $category_id = 0, int $limit = 7, int $avoidProduct = 0): array | \Illuminate\Database\Eloquent\Collection
     {
         if(!Auth::check()) {
@@ -18,7 +96,7 @@ class ProductService
         $avoidIngredients = UserService::getAvoidedIngredients(returnOnlyIds: true);
 
         $query = Product::with(['ingredients.parents', 'brand', 'category', 'categories'])
-            ->select('id', 'name', 'brand_id', 'category_id')
+            ->select('id', 'name', 'img', 'img_alt', 'brand_id', 'category_id')
             ->where('id', '!=', $avoidProduct);
 
         if ($brand_id !== 0) {

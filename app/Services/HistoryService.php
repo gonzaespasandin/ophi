@@ -16,25 +16,28 @@ use Error;
 
 class HistoryService
 {
+    /**
+     * Everything a scan needs to render a row: the brand travels with the
+     * product because both the home and the history link to
+     * /product/{name}/{brand}.
+     */
+    private const SCAN_RELATIONS = ['product.brand', 'results.profile'];
+
    static public function index()
     {
         // ---------- Chequeo de premuium 
         $user = User::with(['subscription'])
         ->find(Auth::id());
         if(!$user->isPremium()) {
-            $history = History::with([
-                'product', 'results.profile'
-                ])
+            $history = History::with(self::SCAN_RELATIONS)
                 ->where('user_id', Auth::user()->id)
                 ->orderBy('scanned_at', 'desc')
                 ->limit(10)
                 ->get();
             return $history;
         }
-        // ---------- 
-        $history = History::with([
-            'product', 'results.profile'
-            ])
+        // ----------
+        $history = History::with(self::SCAN_RELATIONS)
             ->where('user_id', Auth::user()->id)
             ->orderBy('scanned_at', 'desc')
             ->paginate(10);
@@ -81,12 +84,10 @@ class HistoryService
 
     static public function getLatestScans()
     {
-        $history = History::with([
-                'product', 'results.profile'
-                ])
+        $history = History::with(self::SCAN_RELATIONS)
                 ->where('user_id', Auth::user()->id)
                 ->orderBy('scanned_at', 'desc')
-                ->limit(3) 
+                ->limit(3)
                 ->get();
 
         return $history;
@@ -100,9 +101,7 @@ class HistoryService
                 'message' => 'Usuario no premium'
             ], 403);
         }
-        $history = History::with([
-                'product', 'results.profile'
-                ])
+        $history = History::with(self::SCAN_RELATIONS)
                 ->where('user_id', Auth::user()->id)
                  ->whereHas('product', function ($query) use ($name) {
                     $query->where('name', 'like', "%$name%");

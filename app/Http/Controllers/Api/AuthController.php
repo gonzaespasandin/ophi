@@ -121,6 +121,21 @@ class AuthController extends Controller
             }
         );
 
+        // El status traducido no sirve para ramificar en el cliente: depende del
+        // locale y de lang/*/passwords.php. Un enlace vencido tiene que llegar
+        // como error HTTP, con la clave cruda de Laravel como código estable.
+        //
+        // Todos los fallos responden INVALID_TOKEN, incluido el email sin cuenta:
+        // devolver INVALID_USER distinguiría una dirección registrada de una que
+        // no lo está, y este endpoint es público y sin throttle. Para quien pide
+        // el reset la causa es la misma —el enlace no sirve— y la acción también.
+        if ($status !== Password::PASSWORD_RESET) {
+            return response()->json([
+                'status' => __(Password::INVALID_TOKEN),
+                'code' => Password::INVALID_TOKEN,
+            ], 422);
+        }
+
         return response()->json(['status' => __($status)]);
     }
 }

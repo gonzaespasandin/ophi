@@ -37,8 +37,12 @@ class ProfileController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'ingredients' => 'nullable|array',
+            'ingredients.*' => 'integer|exists:ingredients,id',
         ], [
             'name.required' => 'El nombre es obligatorio',
+            'ingredients.array' => 'Los ingredientes deben ser una lista',
+            'ingredients.*.integer' => 'Los ingredientes deben ser identificadores válidos',
+            'ingredients.*.exists' => 'Alguno de los ingredientes elegidos no existe',
         ]);
 
         try {
@@ -59,9 +63,13 @@ class ProfileController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'avatar_color' => 'sometimes|nullable|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'ingredients' => 'sometimes|nullable|array',
+            'ingredients.*' => 'integer|exists:ingredients,id',
         ], [
             'name.required' => 'El nombre es obligatorio',
             'avatar_color.regex' => 'El color no tiene un formato válido',
+            'ingredients.array' => 'Los ingredientes deben ser una lista',
+            'ingredients.*.integer' => 'Los ingredientes deben ser identificadores válidos',
+            'ingredients.*.exists' => 'Alguno de los ingredientes elegidos no existe',
         ]);
 
         $profile = $this->profileService->update($id, $data);

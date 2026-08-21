@@ -44,14 +44,17 @@ class AuthController extends Controller
 
 
     public function register(Request $request) {
-        Log::debug('Registrando usuario...');
-
         $data = $request->validate([
             'terms_and_conditions' => 'required|accepted',
             'email' => 'required|email|unique:users,email',
             'name' => 'required',
             'password' => 'required|min:8|max:74|regex:/^(?=.*[a-z])(?=.*[A-Z]).+$/',
             'confirm_password' => 'required|same:password',
+            // El wizard manda acá los ingredientes que el usuario eligió evitar.
+            // Sin estas reglas validate() los descartaba y el perfil principal
+            // nacía vacío. La selección vacía es válida: se puede completar después.
+            'ingredients' => 'nullable|array',
+            'ingredients.*' => 'integer|exists:ingredients,id',
         ],
         [
             'terms_and_conditions.required' => 'Debes aceptar los términos y condiciones',
@@ -65,6 +68,9 @@ class AuthController extends Controller
             'password.regex' => 'La contraseña debe tener al menos 1 letra minúscula y otra mayúscula',
             'confirm_password.required' => 'La confirmación de contraseña es obligatoria',
             'confirm_password.same' => 'Las contraseñas no coinciden',
+            'ingredients.array' => 'Los ingredientes deben ser una lista',
+            'ingredients.*.integer' => 'Alguno de los ingredientes seleccionados no es válido',
+            'ingredients.*.exists' => 'Alguno de los ingredientes seleccionados no existe',
         ]);
 
         $name = trim($request->input('name'));

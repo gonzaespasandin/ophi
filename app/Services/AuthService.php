@@ -59,9 +59,7 @@ class AuthService
     }
 
     static public function register(Array $data, String $name) 
-    {        
-        Log::debug('Todo bien en la validación :d');
-
+    {
         $user = DB::transaction(function () use ($data, $name) {
             $user = new User();
             $user->name = $name;
@@ -87,17 +85,22 @@ class AuthService
                 }
             }
 
-            Profile::create([
+            $profile = Profile::create([
                 'name' => $name,
                 'owner_id' => $user->id,
                 'user_id' => $user->id,
                 'is_main' => true,
             ]);
 
+            // Los ingredientes del wizard van dentro de la misma transacción: un
+            // usuario con el perfil principal vacío no puede usar la app, así que
+            // o se guarda todo o no se guarda nada.
+            $profile->ingredients()->attach($data['ingredients'] ?? []);
+
             return $user;
         });
 
-        Log::info('Usuario registrado', ['user' => $user]);
+        Log::info('Usuario registrado', ['id' => $user->id, 'email' => $user->email]);
 
         return $user;
     }

@@ -88,17 +88,37 @@ class AuthController extends Controller
     }
 
     public function forgot_password(Request $request) {
-        Log::info('------------------------------------------------------------------------------------------');
-        Log::info('[AuthController forgot_password()]');
         $request->validate(['email' => 'required|email']);
 
-        Log::info('Email validated...');
         $status = Password::sendResetLink(
             $request->only('email')
         );
 
-        Log::info('Status thing done...', ['status' => $status]);
-        return response()->json(['status' => __($status)]);
+        // El status traducido no sirve para ramificar en el cliente: depende del
+        // locale y de lang/*/passwords.php. Un pedido throttleado tiene que llegar
+        // como error HTTP, con la clave cruda de Laravel como código estable; si no,
+        // el front muestra la tarjeta de "te enviamos el enlace" sin que haya mail.
+        if ($status === Password::RESET_THROTTLED) {
+            return response()->json([
+                'status' => __(Password::RESET_THROTTLED),
+                'code' => Password::RESET_THROTTLED,
+            ], 429);
+        }
+
+        // Una dirección sin cuenta se responde igual que un envío exitoso:
+        // devolver INVALID_USER distinguiría un email registrado de uno que no lo
+        // está, y este endpoint es público y sin throttle. Quien pidió el reset
+        // no gana nada con la diferencia; quien enumera cuentas, sí.
+        if ($status === Password::RESET_LINK_SENT || $status === Password::INVALID_USER) {
+            return response()->json(['status' => __(Password::RESET_LINK_SENT)]);
+        }
+
+        // Cualquier otra clave es un caso que el broker no debería devolver acá:
+        // se registra para poder verlo y se responde como error del servidor, sin
+        // afirmarle al usuario que el mail salió.
+        Log::warning('Estado inesperado al enviar el enlace de reset', ['status' => $status]);
+
+        return response()->json(['status' => __($status)], 500);
     }
 
     public function reset_password(Request $request) {

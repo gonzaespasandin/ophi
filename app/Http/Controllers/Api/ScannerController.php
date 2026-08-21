@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Services\BarcodeSuggestionService;
 use App\Services\ScannerService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ScannerController extends Controller
 {
@@ -20,8 +19,6 @@ class ScannerController extends Controller
     }
 
     public function process(Request $request) {
-        Log::info('Request recieved to process the scanner: ', ['request' => $request]);
-
         $request->validate([
             'codigo' => 'required|string|max:15',
         ]);

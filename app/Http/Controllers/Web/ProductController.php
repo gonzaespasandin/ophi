@@ -9,7 +9,6 @@ use App\Models\Category;
 use App\Models\Ingredient;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
@@ -132,7 +131,6 @@ class ProductController extends Controller
         $result = [];
         $newIngredients = [];
         $names = explode(',', $names);
-        Log::info('Names: ', [$names]);
 
         foreach ($names as $name) {
             $name = Ingredient::normalize($name);

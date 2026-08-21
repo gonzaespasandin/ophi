@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;  
 
 class Product extends Model
 {
@@ -40,13 +39,6 @@ class Product extends Model
     ];
 
     public function getIngredientIds(): array {
-        $ids = [];
-
-        Log::info('------------------------------------------------------------------------------------------');
-        Log::info('getIngredientIds()');
-        Log::info('Ingredients', ['ids' => $this->ingredients]);
-        Log::info('Ids?', ['ids' => $this->ingredients->pluck('id')->all()]);
-
         return $this->ingredients->pluck('id')->all();
     }
 

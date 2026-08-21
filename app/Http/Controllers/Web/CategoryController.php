@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class CategoryController extends Controller
@@ -41,10 +40,6 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|unique:categories'
         ]);
-
-        Log::info('[App\Http\Controllers\Web\CategoryController::class update()]');
-        Log::info('ID: ' . $request->input('id'));
-        Log::info('Name: ' . $request->input('name'));
 
         $category = Category::findOrFail($request->input('id'));
 
